@@ -17,7 +17,6 @@ public class Parcours {
         this.description = description;
         this.distanceKm = distanceKm;
         this.nombreZonesCouleur = nombreZonesCouleur;
-
     }
 
     // Getters et Setters
