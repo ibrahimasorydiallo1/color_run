@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter un utilisateur - Color Run</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="../../assets/css/style.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../../assets/js/admin/admin-nav.js"></script>
+    <script src="../../assets/js/image-handler.js"></script>
+    <script src="../../assets/js/page-transitions.js"></script>
+    <script src="../../assets/js/admin/admin-forms.js"></script>
+    <script src="../../assets/js/admin/admin-utils.js"></script>
+    <style>
+        /* Styles pour la navigation mobile */
+        .mobile-nav {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-nav {
+                display: flex;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background-color: white;
+                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+                z-index: 50;
+                padding: 0.5rem 0;
+            }
+            
+            /* Ajouter un padding en bas du contenu pour éviter qu'il ne soit caché par la barre de navigation */
+            body {
+                padding-bottom: 4rem;
+            }
+            
+            /* Cacher la navigation desktop sur mobile */
+            .desktop-nav {
+                display: none;
+            }
+            
+            /* Style pour le menu mobile */
+            .mobile-menu {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: white;
+                z-index: 100;
+                padding: 1rem;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease-in-out;
+            }
+            
+            .mobile-menu.active {
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Navigation Desktop -->
+    <nav class="bg-white shadow-lg desktop-nav">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="admin-dashboard.html" class="text-2xl font-bold text-purple-600">Color Run</a>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="admin-dashboard.html" class="text-gray-700 hover:text-purple-600">Tableau de bord</a>
+                    <a href="admin-races.html" class="text-gray-700 hover:text-purple-600">Courses</a>
+                    <a href="admin-users.html" class="text-purple-600 font-semibold">Utilisateurs</a>
+                    <a href="admin-organizers.html" class="text-gray-700 hover:text-purple-600">Organisateurs</a>
+                    <div class="relative group">
+                        <div class="w-8 h-8 rounded-full overflow-hidden bg-gray-200 flex-shrink-0 cursor-pointer">
+                            <img src="../../assets/images/default-avatar.png" alt="Photo de profil" class="w-full h-full object-cover">
+                        </div>
+                        <div class="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg py-2 transform opacity-0 scale-95 invisible group-hover:opacity-100 group-hover:scale-100 group-hover:visible transition-all duration-200 origin-top-right z-50">
+                            <a href="admin-profile.html" class="flex items-center px-4 py-3 text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors duration-200">
+                                <i class="fas fa-user-circle w-5 h-5 mr-3"></i>
+                                <span class="font-medium">Mon profil</span>
+                            </a>
+                            <div class="border-t border-gray-100 my-2"></div>
+                            <button class="w-full flex items-center px-4 py-3 text-red-600 hover:bg-red-50 transition-colors duration-200 logout-button">
+                                <i class="fas fa-sign-out-alt w-5 h-5 mr-3"></i>
+                                <span class="font-medium">Déconnexion</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button class="text-gray-700 hover:text-purple-600 mobile-menu-button" aria-label="Menu">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav">
+        <div class="flex justify-around items-center w-full">
+            <a href="admin-dashboard.html" class="flex flex-col items-center text-gray-600">
+                <i class="fas fa-tachometer-alt text-xl"></i>
+                <span class="text-xs mt-1">Tableau de bord</span>
+            </a>
+            <a href="admin-races.html" class="flex flex-col items-center text-gray-600">
+                <i class="fas fa-running text-xl"></i>
+                <span class="text-xs mt-1">Courses</span>
+            </a>
+            <a href="admin-users.html" class="flex flex-col items-center text-purple-600">
+                <i class="fas fa-users text-xl"></i>
+                <span class="text-xs mt-1">Utilisateurs</span>
+            </a>
+            <a href="admin-organizers.html" class="flex flex-col items-center text-gray-600">
+                <i class="fas fa-building text-xl"></i>
+                <span class="text-xs mt-1">Organisateurs</span>
+            </a>
+            <a href="admin-profile.html" class="flex flex-col items-center text-gray-600">
+                <i class="fas fa-user-circle text-xl"></i>
+                <span class="text-xs mt-1">Profil</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu hidden">
+        <div class="flex justify-between items-center mb-6">
+            <a href="admin-dashboard.html" class="text-2xl font-bold text-purple-600">Color Run</a>
+            <button class="text-gray-700 hover:text-purple-600 mobile-menu-close" aria-label="Fermer">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        <nav class="space-y-4">
+            <a href="admin-dashboard.html" class="block text-gray-700 hover:text-purple-600 py-2">Tableau de bord</a>
+            <a href="admin-races.html" class="block text-gray-700 hover:text-purple-600 py-2">Courses</a>
+            <a href="admin-users.html" class="block text-purple-600 font-semibold py-2">Utilisateurs</a>
+            <a href="admin-organizers.html" class="block text-gray-700 hover:text-purple-600 py-2">Organisateurs</a>
+            <a href="admin-profile.html" class="block text-gray-700 hover:text-purple-600 py-2">
+                <i class="fas fa-user-circle mr-2"></i>Mon profil
+            </a>
+            <div class="border-t border-gray-200 my-4"></div>
+            <button class="w-full text-left text-red-600 hover:text-red-700 py-2 logout-button">
+                <i class="fas fa-sign-out-alt mr-2"></i>Déconnexion
+            </button>
+        </nav>
+    </div>
+
+    <!-- Contenu principal -->
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div class="px-4 py-6 sm:px-0">
+            <div class="bg-white shadow rounded-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Ajouter un utilisateur</h2>
+                <form id="add-user-form" class="space-y-6">
+                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700">Nom</label>
+                            <input type="text" name="name" id="name" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                            <input type="email" name="email" id="email" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        </div>
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-700">Mot de passe</label>
+                            <input type="password" name="password" id="password" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        </div>
+                        <div>
+                            <label for="role" class="block text-sm font-medium text-gray-700">Rôle</label>
+                            <select name="role" id="role" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                <option value="">Sélectionner un rôle</option>
+                                <option value="user">Utilisateur</option>
+                                <option value="admin">Administrateur</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="status" class="block text-sm font-medium text-gray-700">Statut</label>
+                            <select name="status" id="status" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                <option value="">Sélectionner un statut</option>
+                                <option value="active">Actif</option>
+                                <option value="inactive">Inactif</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Avatar -->
+                    <div class="col-span-6 sm:col-span-4">
+                        <label for="avatar" class="block text-sm font-medium text-gray-700">Photo de profil</label>
+                        <div class="mt-1 flex items-center space-x-4">
+                            <div class="h-32 w-32 overflow-hidden rounded-full bg-gray-100">
+                                <img id="avatar-preview" src="../../assets/images/default-avatar.png" alt="Aperçu de l'avatar" class="h-full w-full object-cover">
+                            </div>
+                            <div class="flex-1">
+                                <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-purple-500 transition-colors duration-200">
+                                    <input type="file" name="avatar" id="avatar" accept="image/*" class="hidden">
+                                    <label for="avatar" class="cursor-pointer flex flex-col items-center space-y-2">
+                                        <i class="fas fa-cloud-upload-alt text-2xl text-gray-400"></i>
+                                        <span class="text-sm text-gray-500">Cliquez ou déposez une image ici</span>
+                                        <span class="text-xs text-gray-400">PNG, JPG jusqu'à 5MB</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="submit" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Ajouter l'utilisateur
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12 mt-12">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h4 class="text-xl font-semibold mb-4">Color Run</h4>
+                    <p class="text-gray-400">Des courses colorées pour tous les niveaux</p>
+                </div>
+                <div>
+                    <h4 class="text-xl font-semibold mb-4">Liens rapides</h4>
+                    <ul class="space-y-2">
+                        <li><a href="courses.html" class="text-gray-400 hover:text-white">Courses</a></li>
+                        <li><a href="about.html" class="text-gray-400 hover:text-white">À propos</a></li>
+                        <li><a href="contact.html" class="text-gray-400 hover:text-white">Contact</a></li>
+                        <li><a href="become-organizer.html" class="text-gray-400 hover:text-white">Devenir organisateur</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-semibold mb-4">Contact</h4>
+                    <ul class="space-y-2">
+                        <li class="text-gray-400">Email: contact@colorrun.fr</li>
+                        <li class="text-gray-400">Tél: 01 23 45 67 89</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-semibold mb-4">Suivez-nous</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 Color Run. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.querySelector('form');
+            const avatarInput = document.querySelector('#avatar');
+            const preview = document.querySelector('#avatar-preview');
+            const dropZone = avatarInput.closest('.border-dashed');
+
+            // Initialiser le gestionnaire d'images
+            new ImageHandler({
+                inputElement: avatarInput,
+                previewElement: preview,
+                dropZone: dropZone
+            });
+
+            // Gérer la soumission du formulaire
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const formData = {
+                    name: form.querySelector('input[name="name"]').value,
+                    email: form.querySelector('input[name="email"]').value,
+                    password: form.querySelector('input[name="password"]').value,
+                    role: form.querySelector('select[name="role"]').value,
+                    status: 'active',
+                    createdAt: new Date().toISOString()
+                };
+
+                // Gérer l'upload de l'avatar
+                if (avatarInput.files.length > 0) {
+                    try {
+                        formData.avatar = await ImageHandler.fileToBase64(avatarInput.files[0]);
+                    } catch (error) {
+                        console.error('Erreur lors de la conversion de l\'avatar:', error);
+                        showAlert('Erreur lors du traitement de l\'image', 'error');
+                        return;
+                    }
+                }
+
+                // Sauvegarder dans le localStorage
+                const users = JSON.parse(localStorage.getItem('users') || '[]');
+                formData.id = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
+                users.push(formData);
+                localStorage.setItem('users', JSON.stringify(users));
+
+                showAlert('Utilisateur ajouté avec succès !', 'success');
+
+                // Rediriger vers la liste des utilisateurs après un délai
+                setTimeout(() => {
+                    window.location.href = 'admin-users.html';
+                }, 1500);
+            });
+        });
+    </script>
+</body>
+</html> 

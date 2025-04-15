@@ -1,0 +1,190 @@
+/* Styles communs pour la navigation */
+.mobile-nav {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .mobile-nav {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: white;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        z-index: 50;
+        padding: 0.5rem 0;
+    }
+    
+    /* Ajouter un padding en bas du contenu pour éviter qu'il ne soit caché par la barre de navigation */
+    body {
+        padding-bottom: 4rem;
+    }
+    
+    /* Cacher la navigation desktop sur mobile */
+    .desktop-nav {
+        display: none;
+    }
+    
+    /* Style pour le menu mobile */
+    .mobile-menu {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: white;
+        z-index: 100;
+        padding: 1rem;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+        overflow-y: auto;
+    }
+    
+    .mobile-menu.active {
+        transform: translateX(0);
+    }
+    
+    /* Améliorer l'espacement des cartes sur mobile */
+    .card-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    /* Ajuster la taille des éléments pour une meilleure lisibilité sur mobile */
+    .mobile-text {
+        font-size: 0.875rem;
+    }
+    
+    /* Améliorer l'espacement des sections */
+    .section-spacing {
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Améliorer l'espacement des formulaires sur mobile */
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    /* Améliorer l'espacement des tableaux sur mobile */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Améliorer l'espacement des boutons sur mobile */
+    .button-group {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    /* Améliorer l'espacement des modales sur mobile */
+    .modal-content {
+        width: 95%;
+        margin: 1rem auto;
+    }
+}
+
+/* Style pour les notifications */
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #ef4444;
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Style pour les transitions */
+.fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Style pour les alertes */
+.alert {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    padding: 1rem;
+    border-radius: 0.375rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 50;
+    animation: slideIn 0.3s ease-in-out;
+}
+
+.alert-success {
+    background-color: #10b981;
+    color: white;
+}
+
+.alert-error {
+    background-color: #ef4444;
+    color: white;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Style pour les boutons de chargement */
+.loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loading::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 3px solid #e5e7eb;
+    border-top-color: #8b5cf6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    z-index: 1;
+}
+
+@keyframes spin {
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+} 
