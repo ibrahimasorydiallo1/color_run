@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration des Courses - Color Run</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="../../assets/js/admin/admin-nav.js"></script>
+    <script src="../../assets/js/admin/admin-utils.js"></script>
+    <script src="../../assets/js/admin/admin-forms.js"></script>
+    <style>
+        /* Styles pour la navigation mobile */
+        .mobile-nav {
+            display: none;
+        }
+        
+        /* Styles pour le menu déroulant Admin */
+        .group:hover .fa-chevron-down {
+            transform: rotate(180deg);
+        }
+        
+        .group-hover\:rotate-180:hover {
+            transform: rotate(180deg);
+        }
+        
+        .group-hover\:opacity-100:hover {
+            opacity: 1;
+        }
+        
+        .group-hover\:scale-100:hover {
+            transform: scale(1);
+        }
+        
+        .group-hover\:visible:hover {
+            visibility: visible;
+        }
+        
+        /* Animation du menu déroulant */
+        .transform {
+            transform-origin: top right;
+            transition: all 0.2s ease-in-out;
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-nav {
+                display: flex;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background-color: white;
+                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+                z-index: 50;
+                padding: 0.5rem 0;
+            }
+            
+            /* Ajouter un padding en bas du contenu pour éviter qu'il ne soit caché par la barre de navigation */
+            body {
+                padding-bottom: 4rem;
+            }
+            
+            /* Cacher la navigation desktop sur mobile */
+            .desktop-nav {
+                display: none;
+            }
+            
+            /* Style pour le menu mobile */
+            .mobile-menu {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: white;
+                z-index: 100;
+                padding: 1rem;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease-in-out;
+            }
+            
+            .mobile-menu.active {
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Navigation Desktop -->
+    <nav class="bg-white shadow-lg desktop-nav">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="admin-dashboard.html" class="text-2xl font-bold text-purple-600">Color Run</a>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="admin-dashboard.html" class="text-gray-700 hover:text-purple-600">Tableau de bord</a>
+                    <a href="admin-races.html" class="text-purple-600 font-semibold">Courses</a>
+                    <a href="adminUsers.html" class="text-gray-700 hover:text-purple-600">Utilisateurs</a>
+                    <a href="admin-organizers.html" class="text-gray-700 hover:text-purple-600">Organisateurs</a>
+                    <div class="relative group">
+                        <div class="w-8 h-8 rounded-full overflow-hidden bg-gray-200 flex-shrink-0 cursor-pointer">
+                            <img src="../../assets/images/default-avatar.png" alt="Photo de profil" class="w-full h-full object-cover">
+                        </div>
+                        <div class="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg py-2 transform opacity-0 scale-95 invisible group-hover:opacity-100 group-hover:scale-100 group-hover:visible transition-all duration-200 origin-top-right z-50">
+                            <a href="admin-profile.html" class="flex items-center px-4 py-3 text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors duration-200">
+                                <i class="fas fa-user-circle w-5 h-5 mr-3"></i>
+                                <span class="font-medium">Mon profil</span>
+                            </a>
+                            <div class="border-t border-gray-100 my-2"></div>
+                            <button class="w-full flex items-center px-4 py-3 text-red-600 hover:bg-red-50 transition-colors duration-200 logout-button">
+                                <i class="fas fa-sign-out-alt w-5 h-5 mr-3"></i>
+                                <span class="font-medium">Déconnexion</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button class="text-gray-700 hover:text-purple-600 mobile-menu-button" aria-label="Menu">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold text-gray-900">Administration des Courses</h1>
+            <a href="adminAddRace.html" class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700">
+                <i class="fas fa-plus mr-2"></i>Ajouter une course
+            </a>
+        </div>
+
+        <!-- Filtres -->
+        <div class="bg-white rounded-lg shadow-md p-4 mb-6">
+            <div class="flex flex-wrap gap-2">
+                <button class="bg-purple-600 text-white px-4 py-2 rounded-md filter-button" data-filter="all">Toutes</button>
+                <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md filter-button" data-filter="upcoming">À venir</button>
+                <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md filter-button" data-filter="past">Passées</button>
+                <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md filter-button" data-filter="popular">Populaires</button>
+            </div>
+        </div>
+
+        <!-- Liste des courses -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Course</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lieu</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Inscriptions</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+                            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200" id="races-table-body">
+                        <!-- Les courses seront chargées dynamiquement ici -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav">
+        <div class="flex justify-around items-center w-full">
+            <a href="admin-dashboard.html" class="flex flex-col items-center text-gray-600">
+                <i class="fas fa-tachometer-alt text-xl"></i>
+                <span class="text-xs mt-1">Tableau de bord</span>
+            </a>
+            <a href="admin-races.html" class="flex flex-col items-center text-purple-600">
+                <i class="fas fa-running text-xl"></i>
+                <span class="text-xs mt-1">Courses</span>
+            </a>
+            <a href="adminUsers.html" class="flex flex-col items-center text-gray-600">
+                <i class="fas fa-users text-xl"></i>
+                <span class="text-xs mt-1">Utilisateurs</span>
+            </a>
+            <a href="admin-organizers.html" class="flex flex-col items-center text-gray-600">
+                <i class="fas fa-building text-xl"></i>
+                <span class="text-xs mt-1">Organisateurs</span>
+            </a>
+            <a href="admin-profile.html" class="flex flex-col items-center text-gray-600">
+                <i class="fas fa-user-circle text-xl"></i>
+                <span class="text-xs mt-1">Profil</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu hidden">
+        <div class="flex justify-between items-center mb-6">
+            <a href="../index.html" class="text-2xl font-bold text-purple-600">Color Run</a>
+            <button class="text-gray-700 hover:text-purple-600 mobile-menu-close" aria-label="Fermer">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        <nav class="space-y-4">
+            <a href="admin-dashboard.html" class="block text-gray-700 hover:text-purple-600 py-2">Tableau de bord</a>
+            <a href="admin-races.html" class="block text-purple-600 font-semibold py-2">Courses</a>
+            <a href="adminUsers.html" class="block text-gray-700 hover:text-purple-600 py-2">Utilisateurs</a>
+            <a href="admin-organizers.html" class="block text-gray-700 hover:text-purple-600 py-2">Organisateurs</a>
+            <a href="admin-profile.html" class="block text-gray-700 hover:text-purple-600 py-2">Profil</a>
+            <button class="w-full bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 text-center logout-button">Déconnexion</button>
+        </nav>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12 mt-12">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h4 class="text-xl font-semibold mb-4">Color Run</h4>
+                    <p class="text-gray-400">Des courses colorées pour tous les niveaux</p>
+                </div>
+                <div>
+                    <h4 class="text-xl font-semibold mb-4">Liens rapides</h4>
+                    <ul class="space-y-2">
+                        <li><a href="courses.html" class="text-gray-400 hover:text-white">Courses</a></li>
+                        <li><a href="about.html" class="text-gray-400 hover:text-white">À propos</a></li>
+                        <li><a href="contact.html" class="text-gray-400 hover:text-white">Contact</a></li>
+                        <li><a href="become-organizer.html" class="text-gray-400 hover:text-white">Devenir organisateur</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-semibold mb-4">Contact</h4>
+                    <ul class="space-y-2">
+                        <li class="text-gray-400">Email: contact@colorrun.fr</li>
+                        <li class="text-gray-400">Tél: 01 23 45 67 89</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-semibold mb-4">Suivez-nous</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 Color Run. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Fonction pour afficher une alerte
+        function showAlert(message, type = 'success') {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `fixed top-4 right-4 p-4 rounded-md shadow-lg ${
+                type === 'success' ? 'bg-green-500' : 'bg-red-500'
+            } text-white z-50`;
+            alertDiv.textContent = message;
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 3000);
+        }
+
+        // Fonction pour initialiser les boutons de suppression
+        function initDeleteButtons() {
+            const deleteButtons = document.querySelectorAll('.delete-button');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const type = this.dataset.type;
+                    const id = this.dataset.id;
+                    
+                    if (confirm(`Êtes-vous sûr de vouloir supprimer cette ${type === 'race' ? 'course' : 'inscription'} ?`)) {
+                        deleteItem(type, id);
+                    }
+                });
+            });
+        }
+
+        // Fonction pour supprimer un élément
+        function deleteItem(type, id) {
+            try {
+                const items = JSON.parse(localStorage.getItem(type === 'race' ? 'races' : 'registrations') || '[]');
+                const updatedItems = items.filter(item => item.id !== id);
+                localStorage.setItem(type === 'race' ? 'races' : 'registrations', JSON.stringify(updatedItems));
+                
+                showAlert(`${type === 'race' ? 'Course' : 'Inscription'} supprimée avec succès !`);
+                
+                // Recharger les données
+                if (type === 'race') {
+                    loadRaces();
+                } else {
+                    loadRegistrations();
+                }
+            } catch (error) {
+                console.error(`Erreur lors de la suppression de la ${type === 'race' ? 'course' : 'inscription'}:`, error);
+                showAlert(`Erreur lors de la suppression de la ${type === 'race' ? 'course' : 'inscription'}`, 'error');
+            }
+        }
+
+        // Fonction pour charger les courses
+        function loadRaces() {
+            try {
+            const races = JSON.parse(localStorage.getItem('races') || '[]');
+            const tableBody = document.getElementById('races-table-body');
+                let tableContent = '';
+            
+            if (races.length === 0) {
+                    tableContent = `
+                        <tr>
+                            <td colspan="7" class="px-6 py-4 text-center text-gray-500">
+                                Aucune course trouvée
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    races.forEach(race => {
+                        const statusClass = race.status === 'upcoming' ? 'bg-green-100 text-green-800' : 
+                                           race.status === 'ongoing' ? 'bg-blue-100 text-blue-800' : 
+                                           'bg-gray-100 text-gray-800';
+                        
+                        const statusText = race.status === 'upcoming' ? 'À venir' : 
+                                          race.status === 'ongoing' ? 'En cours' : 
+                                          'Terminée';
+                        
+                        tableContent += `
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10">
+                                        <img class="h-10 w-10 rounded-full object-cover" src="${race.image || '../../assets/images/default-race.jpg'}" alt="${race.title}">
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900">${race.title}</div>
+                                        <div class="text-sm text-gray-500">${race.location}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">${new Date(race.date).toLocaleDateString()}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">${race.distance} km</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">${race.capacity}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">${race.price} €</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
+                                    ${statusText}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                                <a href="admin-edit-race.html?id=${race.id}" class="text-purple-600 hover:text-purple-900">Modifier</a>
+                                <button class="text-red-600 hover:text-red-900 delete-button" data-type="race" data-id="${race.id}">
+                                    <i class="fas fa-trash-alt"></i>
+                                    <span>Supprimer</span>
+                                </button>
+                        </td>
+                    </tr>
+                `;
+                    });
+                }
+                
+                tableBody.innerHTML = tableContent;
+                // Initialiser les boutons de suppression après avoir filtré les courses
+                initDeleteButtons();
+            } catch (error) {
+                console.error('Erreur lors du chargement des courses:', error);
+                showAlert('Erreur lors du chargement des courses', 'error');
+            }
+        }
+
+        // Fonction pour filtrer les courses
+        function filterRaces(filter) {
+            try {
+                const races = JSON.parse(localStorage.getItem('races') || '[]');
+                const tableBody = document.getElementById('races-table-body');
+            let tableContent = '';
+            
+                let filteredRaces = races;
+                
+                if (filter !== 'all') {
+                    filteredRaces = races.filter(race => race.status === filter);
+                }
+                
+                if (filteredRaces.length === 0) {
+                    tableContent = `
+                        <tr>
+                            <td colspan="7" class="px-6 py-4 text-center text-gray-500">
+                                Aucune course trouvée
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    filteredRaces.forEach(race => {
+                        const statusClass = race.status === 'upcoming' ? 'bg-green-100 text-green-800' : 
+                                           race.status === 'ongoing' ? 'bg-blue-100 text-blue-800' : 
+                                           'bg-gray-100 text-gray-800';
+                        
+                        const statusText = race.status === 'upcoming' ? 'À venir' : 
+                                          race.status === 'ongoing' ? 'En cours' : 
+                                          'Terminée';
+                
+                tableContent += `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10">
+                                        <img class="h-10 w-10 rounded-full object-cover" src="${race.image || '../../assets/images/default-race.jpg'}" alt="${race.title}">
+                                    </div>
+                                <div class="ml-4">
+                                    <div class="text-sm font-medium text-gray-900">${race.title}</div>
+                                        <div class="text-sm text-gray-500">${race.location}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">${new Date(race.date).toLocaleDateString()}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">${race.distance} km</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">${race.capacity}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">${race.price} €</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
+                                ${statusText}
+                            </span>
+                        </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                                <a href="admin-edit-race.html?id=${race.id}" class="text-purple-600 hover:text-purple-900">Modifier</a>
+                                <button class="text-red-600 hover:text-red-900 delete-button" data-type="race" data-id="${race.id}">
+                                    <i class="fas fa-trash-alt"></i>
+                                    <span>Supprimer</span>
+                                </button>
+                        </td>
+                    </tr>
+                `;
+            });
+                }
+            
+            tableBody.innerHTML = tableContent;
+                // Initialiser les boutons de suppression après avoir filtré les courses
+                initDeleteButtons();
+            } catch (error) {
+                console.error('Erreur lors du filtrage des courses:', error);
+                showAlert('Erreur lors du filtrage des courses', 'error');
+        }
+        }
+
+        // Charger les courses au chargement de la page
+        document.addEventListener('DOMContentLoaded', () => {
+            loadRaces();
+
+        // Initialiser les filtres
+        const filterButtons = document.querySelectorAll('.filter-button');
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Mettre à jour l'état actif des boutons
+                filterButtons.forEach(btn => {
+                    btn.classList.remove('bg-purple-600', 'text-white');
+                    btn.classList.add('bg-gray-200', 'text-gray-700');
+                });
+                
+                button.classList.remove('bg-gray-200', 'text-gray-700');
+                button.classList.add('bg-purple-600', 'text-white');
+                
+                // Filtrer les courses
+                const filter = button.dataset.filter;
+                filterRaces(filter);
+            });
+        });
+
+            // Gestionnaire d'événements pour le menu mobile
+            const mobileMenuButton = document.querySelector('.mobile-menu-button');
+            const mobileMenuClose = document.querySelector('.mobile-menu-close');
+            const mobileMenu = document.querySelector('.mobile-menu');
+            
+            if (mobileMenuButton && mobileMenuClose && mobileMenu) {
+                mobileMenuButton.addEventListener('click', function() {
+                    mobileMenu.classList.remove('hidden');
+                    setTimeout(() => {
+                        mobileMenu.classList.add('active');
+                    }, 10);
+                });
+                
+                mobileMenuClose.addEventListener('click', function() {
+                    mobileMenu.classList.remove('active');
+                    setTimeout(() => {
+                        mobileMenu.classList.add('hidden');
+                    }, 300);
+                });
+            }
+            
+            // Gestionnaire d'événements pour le bouton de déconnexion
+            document.querySelectorAll('.logout-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+                        window.location.href = 'index.html';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de bord - Color Run</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../../assets/js/admin/admin-nav.js"></script>
+    <script src="../../assets/js/admin/admin-utils.js"></script>
+    <script src="../../assets/js/admin/admin-forms.js"></script>
+    <style>
+        /* Styles pour la navigation mobile */
+        .mobile-nav {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-nav {
+                display: flex;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background-color: white;
+                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+                z-index: 50;
+                padding: 0.5rem 0;
+            }
+            
+            /* Ajouter un padding en bas du contenu pour éviter qu'il ne soit caché par la barre de navigation */
+            body {
+                padding-bottom: 4rem;
+            }
+            
+            /* Cacher la navigation desktop sur mobile */
+            .desktop-nav {
+                display: none;
+            }
+            
+            /* Style pour le menu mobile */
+            .mobile-menu {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: white;
+                z-index: 100;
+                padding: 1rem;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease-in-out;
+            }
+            
+            .mobile-menu.active {
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Navigation Desktop -->
+    <nav class="bg-white shadow-lg desktop-nav">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="admin-dashboard.html" class="text-2xl font-bold text-purple-600">Color Run</a>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="admin-dashboard.html" class="text-purple-600 font-semibold">Tableau de bord</a>
+                    <a href="admin-races.html" class="text-gray-700 hover:text-purple-600">Courses</a>
+                    <a href="adminUsers.html" class="text-gray-700 hover:text-purple-600">Utilisateurs</a>
+                    <a href="admin-organizers.html" class="text-gray-700 hover:text-purple-600">Organisateurs</a>
+                    <div class="relative group">
+                        <div class="w-8 h-8 rounded-full overflow-hidden bg-gray-200 flex-shrink-0 cursor-pointer">
+                            <img src="../../assets/images/default-avatar.png" alt="Photo de profil" class="w-full h-full object-cover">
+                        </div>
+                        <div class="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg py-2 transform opacity-0 scale-95 invisible group-hover:opacity-100 group-hover:scale-100 group-hover:visible transition-all duration-200 origin-top-right z-50">
+                            <a href="admin-profile.html" class="flex items-center px-4 py-3 text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors duration-200">
+                                <i class="fas fa-user-circle w-5 h-5 mr-3"></i>
+                                <span class="font-medium">Mon profil</span>
+                            </a>
+                            <div class="border-t border-gray-100 my-2"></div>
+                            <button class="w-full flex items-center px-4 py-3 text-red-600 hover:bg-red-50 transition-colors duration-200 logout-button">
+                                <i class="fas fa-sign-out-alt w-5 h-5 mr-3"></i>
+                                <span class="font-medium">Déconnexion</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button class="text-gray-700 hover:text-purple-600 mobile-menu-button" aria-label="Menu">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 py-8 mb-20 md:mb-8">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white rounded-lg p-6 shadow-sm">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500">Total des participants</p>
+                        <h3 class="text-2xl font-bold text-gray-900">1,234</h3>
+                    </div>
+                    <div class="bg-purple-100 p-3 rounded-full">
+                        <i class="fas fa-users text-purple-600"></i>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <span class="text-green-500 text-sm">
+                        <i class="fas fa-arrow-up"></i> 12%
+                    </span>
+                    <span class="text-gray-500 text-sm ml-2">vs mois dernier</span>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg p-6 shadow-sm">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500">Revenus totaux</p>
+                        <h3 class="text-2xl font-bold text-gray-900">45,678 €</h3>
+                    </div>
+                    <div class="bg-green-100 p-3 rounded-full">
+                        <i class="fas fa-euro-sign text-green-600"></i>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <span class="text-green-500 text-sm">
+                        <i class="fas fa-arrow-up"></i> 8%
+                    </span>
+                    <span class="text-gray-500 text-sm ml-2">vs mois dernier</span>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg p-6 shadow-sm">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500">Courses actives</p>
+                        <h3 class="text-2xl font-bold text-gray-900">12</h3>
+                    </div>
+                    <div class="bg-blue-100 p-3 rounded-full">
+                        <i class="fas fa-running text-blue-600"></i>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <span class="text-green-500 text-sm">
+                        <i class="fas fa-arrow-up"></i> 3
+                    </span>
+                    <span class="text-gray-500 text-sm ml-2">vs mois dernier</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white rounded-lg p-6 shadow-sm">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-medium">Évolution des revenus</h3>
+                    <div class="flex space-x-2">
+                        <button class="px-3 py-1 text-sm bg-purple-100 text-purple-600 rounded-md hover:bg-purple-200" title="Voir les données mensuelles" aria-label="Voir les données mensuelles">Mois</button>
+                        <button class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200" title="Voir les données annuelles" aria-label="Voir les données annuelles">Année</button>
+                    </div>
+                </div>
+                <canvas id="revenue-chart" height="300"></canvas>
+            </div>
+            <div class="bg-white rounded-lg p-6 shadow-sm">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-medium">Répartition des participants</h3>
+                    <div class="flex space-x-2">
+                        <button class="px-3 py-1 text-sm bg-purple-100 text-purple-600 rounded-md hover:bg-purple-200" title="Voir la répartition par distance" aria-label="Voir la répartition par distance">Par distance</button>
+                        <button class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200" title="Voir la répartition par âge" aria-label="Voir la répartition par âge">Par âge</button>
+                    </div>
+                </div>
+                <canvas id="participants-chart" height="300"></canvas>
+            </div>
+        </div>
+
+        <!-- Paiements récents -->
+        <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex flex-col md:flex-row md:justify-between md:items-center space-y-4 md:space-y-0">
+                    <h3 class="text-lg font-medium">Paiements récents</h3>
+                    <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+                        <div class="relative">
+                            <input type="text" placeholder="Rechercher..." class="w-full md:w-auto pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+                        <select class="w-full md:w-auto border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" title="Filtrer par statut" aria-label="Filtrer par statut">
+                            <option value="">Tous les statuts</option>
+                            <option value="paid">Payé</option>
+                            <option value="pending">En attente</option>
+                            <option value="failed">Échoué</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <div class="inline-block min-w-full">
+                    <div class="overflow-hidden">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Participant</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Course</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Montant</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10">
+                                                <img class="h-10 w-10 rounded-full" src="https://via.placeholder.com/40" alt="">
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">Jean Dupont</div>
+                                                <div class="text-sm text-gray-500">jean.dupont@email.com</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">Color Run Paris</div>
+                                        <div class="text-sm text-gray-500">10K</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">45.00 €</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">12/03/2024</div>
+                                        <div class="text-sm text-gray-500">14:30</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                            Payé
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-purple-600 hover:text-purple-900 mr-3" title="Voir les détails" aria-label="Voir les détails">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="text-blue-600 hover:text-blue-900 mr-3" title="Rembourser" aria-label="Rembourser">
+                                            <i class="fas fa-undo"></i>
+                                        </button>
+                                        <button class="text-red-600 hover:text-red-900" title="Supprimer" aria-label="Supprimer">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10">
+                                                <img class="h-10 w-10 rounded-full" src="https://via.placeholder.com/40" alt="">
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">Marie Martin</div>
+                                                <div class="text-sm text-gray-500">marie.martin@email.com</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">Color Run Lyon</div>
+                                        <div class="text-sm text-gray-500">5K</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">35.00 €</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">12/03/2024</div>
+                                        <div class="text-sm text-gray-500">15:45</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                            En attente
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <button class="text-purple-600 hover:text-purple-900 mr-3" title="Voir les détails" aria-label="Voir les détails">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="text-green-600 hover:text-green-900 mr-3" title="Marquer comme payé" aria-label="Marquer comme payé">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                        <button class="text-red-600 hover:text-red-900" title="Supprimer" aria-label="Supprimer">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="px-6 py-4 border-t border-gray-200">
+                <div class="flex flex-col md:flex-row md:justify-between md:items-center space-y-4 md:space-y-0">
+                    <div class="text-sm text-gray-500">
+                        Affichage de 1 à 2 sur 50 paiements
+                    </div>
+                    <div class="flex justify-center space-x-2">
+                        <button class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200" title="Page précédente" aria-label="Page précédente">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="px-3 py-1 text-sm bg-purple-100 text-purple-600 rounded-md hover:bg-purple-200" title="Page suivante" aria-label="Page suivante">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour les détails de paiement -->
+    <div id="payment-details-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-medium">Détails du paiement</h3>
+                <button class="text-gray-500 hover:text-gray-700 close-modal" aria-label="Fermer">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="mb-4">
+                <div class="flex justify-between mb-2">
+                    <span class="text-gray-600">Participant:</span>
+                    <span class="font-medium" id="modal-participant-name"></span>
+                </div>
+                <div class="flex justify-between mb-2">
+                    <span class="text-gray-600">Course:</span>
+                    <span class="font-medium" id="modal-course-name"></span>
+                </div>
+                <div class="flex justify-between mb-2">
+                    <span class="text-gray-600">Montant:</span>
+                    <span class="font-medium" id="modal-amount"></span>
+                </div>
+                <div class="flex justify-between mb-2">
+                    <span class="text-gray-600">Date:</span>
+                    <span class="font-medium" id="modal-date"></span>
+                </div>
+                <div class="flex justify-between mb-2">
+                    <span class="text-gray-600">Statut:</span>
+                    <span class="font-medium" id="modal-status"></span>
+                </div>
+                <div class="flex justify-between mb-2">
+                    <span class="text-gray-600">Méthode de paiement:</span>
+                    <span class="font-medium" id="modal-payment-method"></span>
+                </div>
+                <div class="border-t border-gray-200 my-4"></div>
+                <div class="mb-4">
+                    <h4 class="text-md font-medium mb-2">Carte enregistrée</h4>
+                    <div class="bg-gray-50 p-3 rounded-md">
+                        <div class="flex items-center">
+                            <i class="fab fa-cc-visa text-blue-600 text-xl mr-2"></i>
+                            <span class="font-medium">•••• •••• •••• 4242</span>
+                        </div>
+                        <div class="text-sm text-gray-500 mt-1">Expire le 12/25</div>
+                    </div>
+                </div>
+                <div class="flex space-x-2">
+                    <button class="flex-1 bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 text-center" id="modal-refund-button">
+                        Rembourser
+                    </button>
+                    <button class="flex-1 bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 text-center close-modal">
+                        Fermer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour le remboursement -->
+    <div id="refund-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-medium">Remboursement</h3>
+                <button class="text-gray-500 hover:text-gray-700 close-refund-modal" aria-label="Fermer">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="mb-4">
+                <p class="mb-4">Vous êtes sur le point de rembourser le paiement de <span id="refund-participant-name" class="font-medium"></span>.</p>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="refund-amount">
+                        Montant du remboursement
+                    </label>
+                    <div class="relative">
+                        <input type="number" id="refund-amount" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="0.00">
+                        <span class="absolute right-3 top-2 text-gray-500">€</span>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="refund-reason">
+                        Raison du remboursement
+                    </label>
+                    <textarea id="refund-reason" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" rows="3" placeholder="Expliquez la raison du remboursement..."></textarea>
+                </div>
+                <div class="flex space-x-2">
+                    <button class="flex-1 bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 text-center" id="confirm-refund-button">
+                        Confirmer le remboursement
+                    </button>
+                    <button class="flex-1 bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 text-center close-refund-modal">
+                        Annuler
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <nav class="bg-white shadow-lg fixed bottom-0 left-0 right-0 md:hidden z-50">
+        <div class="flex justify-around items-center w-full">
+            <a href="admin-dashboard.html" class="flex flex-col items-center text-purple-600">
+                <i class="fas fa-tachometer-alt text-xl"></i>
+                <span class="text-xs mt-1">Tableau de bord</span>
+            </a>
+            <a href="admin-races.html" class="flex flex-col items-center text-gray-600">
+                <i class="fas fa-running text-xl"></i>
+                <span class="text-xs mt-1">Courses</span>
+            </a>
+            <a href="adminUsers.html" class="flex flex-col items-center text-gray-600">
+                <i class="fas fa-users text-xl"></i>
+                <span class="text-xs mt-1">Utilisateurs</span>
+            </a>
+            <a href="admin-organizers.html" class="flex flex-col items-center text-gray-600">
+                <i class="fas fa-building text-xl"></i>
+                <span class="text-xs mt-1">Organisateurs</span>
+            </a>
+            <a href="admin-profile.html" class="flex flex-col items-center text-gray-600">
+                <i class="fas fa-user-circle text-xl"></i>
+                <span class="text-xs mt-1">Profil</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu hidden">
+        <div class="flex justify-between items-center mb-6">
+            <a href="../index.html" class="text-2xl font-bold text-purple-600">Color Run</a>
+            <button class="text-gray-700 hover:text-purple-600 mobile-menu-close" aria-label="Fermer">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        <nav class="space-y-4">
+            <a href="admin-dashboard.html" class="block text-purple-600 font-semibold py-2">Tableau de bord</a>
+            <a href="admin-races.html" class="block text-gray-700 hover:text-purple-600 py-2">Courses</a>
+            <a href="adminUsers.html" class="block text-gray-700 hover:text-purple-600 py-2">Utilisateurs</a>
+            <a href="admin-organizers.html" class="block text-gray-700 hover:text-purple-600 py-2">Organisateurs</a>
+            <a href="profile.html" class="block text-gray-700 hover:text-purple-600 py-2">Profil</a>
+            <button class="w-full bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 text-center logout-button">Déconnexion</button>
+        </nav>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Variables pour stocker les graphiques
+            let revenueChart;
+            let participantsChart;
+            
+            // Données pour les graphiques
+            const monthlyData = {
+                labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
+                data: [12000, 19000, 15000, 25000, 22000, 30000]
+            };
+            
+            const yearlyData = {
+                labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
+                data: [120000, 190000, 150000, 250000, 220000, 300000]
+            };
+            
+            const distanceData = {
+                labels: ['5K', '10K', '21K', '42K'],
+                data: [300, 450, 200, 100]
+            };
+            
+            const ageData = {
+                labels: ['18-24', '25-34', '35-44', '45-54', '55+'],
+                data: [250, 400, 300, 200, 150]
+            };
+            
+            // Fonction pour créer le graphique de revenus
+            function createRevenueChart(data) {
+                const ctx = document.getElementById('revenue-chart').getContext('2d');
+                
+                // Détruire le graphique existant s'il existe
+                if (revenueChart) {
+                    revenueChart.destroy();
+                }
+                
+                revenueChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: 'Revenus',
+                            data: data.data,
+                            borderColor: 'rgb(147, 51, 234)',
+                            backgroundColor: 'rgba(147, 51, 234, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Fonction pour créer le graphique de participants
+            function createParticipantsChart(data) {
+                const ctx = document.getElementById('participants-chart').getContext('2d');
+                
+                // Détruire le graphique existant s'il existe
+                if (participantsChart) {
+                    participantsChart.destroy();
+                }
+                
+                participantsChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            data: data.data,
+                            backgroundColor: [
+                                'rgb(147, 51, 234)',
+                                'rgb(59, 130, 246)',
+                                'rgb(16, 185, 129)',
+                                'rgb(249, 115, 22)',
+                                'rgb(236, 72, 153)'
+                            ],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    padding: 20,
+                                    usePointStyle: true
+                                }
+                            }
+                        },
+                        cutout: '70%'
+                    }
+                });
+            }
+            
+            // Initialiser les graphiques
+            createRevenueChart(monthlyData);
+            createParticipantsChart(distanceData);
+            
+            // Gestionnaires d'événements pour les boutons de filtrage des revenus
+            document.querySelectorAll('[title="Voir les données mensuelles"], [title="Voir les données annuelles"]').forEach(button => {
+                button.addEventListener('click', function() {
+                    // Retirer la classe active de tous les boutons
+                    this.parentElement.querySelectorAll('button').forEach(btn => {
+                        btn.classList.remove('bg-purple-100', 'text-purple-600');
+                        btn.classList.add('bg-gray-100', 'text-gray-600');
+                    });
+                    
+                    // Ajouter la classe active au bouton cliqué
+                    this.classList.remove('bg-gray-100', 'text-gray-600');
+                    this.classList.add('bg-purple-100', 'text-purple-600');
+                    
+                    // Mettre à jour le graphique en fonction du bouton cliqué
+                    if (this.textContent === 'Mois') {
+                        createRevenueChart(monthlyData);
+                    } else {
+                        createRevenueChart(yearlyData);
+                    }
+                });
+            });
+            
+            // Gestionnaires d'événements pour les boutons de filtrage des participants
+            document.querySelectorAll('[title="Voir la répartition par distance"], [title="Voir la répartition par âge"]').forEach(button => {
+                button.addEventListener('click', function() {
+                    // Retirer la classe active de tous les boutons
+                    this.parentElement.querySelectorAll('button').forEach(btn => {
+                        btn.classList.remove('bg-purple-100', 'text-purple-600');
+                        btn.classList.add('bg-gray-100', 'text-gray-600');
+                    });
+                    
+                    // Ajouter la classe active au bouton cliqué
+                    this.classList.remove('bg-gray-100', 'text-gray-600');
+                    this.classList.add('bg-purple-100', 'text-purple-600');
+                    
+                    // Mettre à jour le graphique en fonction du bouton cliqué
+                    if (this.textContent === 'Par distance') {
+                        createParticipantsChart(distanceData);
+                    } else {
+                        createParticipantsChart(ageData);
+                    }
+                });
+            });
+            
+            // Gestionnaire d'événements pour la recherche
+            const searchInput = document.querySelector('input[placeholder="Rechercher..."]');
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const rows = document.querySelectorAll('tbody tr');
+                
+                rows.forEach(row => {
+                    const participantName = row.querySelector('.text-sm.font-medium').textContent.toLowerCase();
+                    const participantEmail = row.querySelector('.text-sm.text-gray-500').textContent.toLowerCase();
+                    const courseName = row.querySelector('td:nth-child(2) .text-sm.text-gray-900').textContent.toLowerCase();
+                    
+                    if (participantName.includes(searchTerm) || 
+                        participantEmail.includes(searchTerm) || 
+                        courseName.includes(searchTerm)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Gestionnaire d'événements pour le filtre par statut
+            const statusFilter = document.querySelector('select[title="Filtrer par statut"]');
+            statusFilter.addEventListener('change', function() {
+                const selectedStatus = this.value;
+                const rows = document.querySelectorAll('tbody tr');
+                
+                rows.forEach(row => {
+                    const statusElement = row.querySelector('td:nth-child(5) span');
+                    const status = statusElement.textContent.trim().toLowerCase();
+                    
+                    if (selectedStatus === '' || status === selectedStatus) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Gestionnaires d'événements pour les boutons d'action
+            document.querySelectorAll('button[title="Voir les détails"]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const row = this.closest('tr');
+                    const participantName = row.querySelector('.text-sm.font-medium').textContent;
+                    const courseName = row.querySelector('td:nth-child(2) .text-sm.text-gray-900').textContent;
+                    const amount = row.querySelector('td:nth-child(3) .text-sm.text-gray-900').textContent;
+                    const date = row.querySelector('td:nth-child(4) .text-sm.text-gray-900').textContent;
+                    const status = row.querySelector('td:nth-child(5) span').textContent.trim();
+                    
+                    // Remplir les informations dans le modal
+                    document.getElementById('modal-participant-name').textContent = participantName;
+                    document.getElementById('modal-course-name').textContent = courseName;
+                    document.getElementById('modal-amount').textContent = amount;
+                    document.getElementById('modal-date').textContent = date;
+                    document.getElementById('modal-status').textContent = status;
+                    document.getElementById('modal-payment-method').textContent = 'Carte bancaire';
+                    
+                    // Afficher le modal
+                    document.getElementById('payment-details-modal').classList.remove('hidden');
+                });
+            });
+            
+            // Gestionnaires d'événements pour les boutons de remboursement
+            document.querySelectorAll('button[title="Rembourser"]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const row = this.closest('tr');
+                    const participantName = row.querySelector('.text-sm.font-medium').textContent;
+                    const amount = row.querySelector('td:nth-child(3) .text-sm.text-gray-900').textContent;
+                    
+                    // Remplir les informations dans le modal de remboursement
+                    document.getElementById('refund-participant-name').textContent = participantName;
+                    document.getElementById('refund-amount').value = amount.replace('€', '').trim();
+                    
+                    // Afficher le modal de remboursement
+                    document.getElementById('refund-modal').classList.remove('hidden');
+                });
+            });
+            
+            // Gestionnaires d'événements pour les boutons "Marquer comme payé"
+            document.querySelectorAll('button[title="Marquer comme payé"]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const row = this.closest('tr');
+                    const participantName = row.querySelector('.text-sm.font-medium').textContent;
+                    
+                    if (confirm(`Êtes-vous sûr de vouloir marquer le paiement de ${participantName} comme payé ?`)) {
+                        const statusElement = row.querySelector('td:nth-child(5) span');
+                        statusElement.textContent = 'Payé';
+                        statusElement.classList.remove('bg-yellow-100', 'text-yellow-800');
+                        statusElement.classList.add('bg-green-100', 'text-green-800');
+                        
+                        // Remplacer le bouton "Marquer comme payé" par "Rembourser"
+                        const actionCell = row.querySelector('td:nth-child(6)');
+                        const checkButton = actionCell.querySelector('button[title="Marquer comme payé"]');
+                        const refundButton = document.createElement('button');
+                        refundButton.className = 'text-blue-600 hover:text-blue-900 mr-3';
+                        refundButton.title = 'Rembourser';
+                        refundButton.setAttribute('aria-label', 'Rembourser');
+                        refundButton.innerHTML = '<i class="fas fa-undo"></i>';
+                        refundButton.addEventListener('click', function() {
+                            const participantName = row.querySelector('.text-sm.font-medium').textContent;
+                            const amount = row.querySelector('td:nth-child(3) .text-sm.text-gray-900').textContent;
+                            
+                            // Remplir les informations dans le modal de remboursement
+                            document.getElementById('refund-participant-name').textContent = participantName;
+                            document.getElementById('refund-amount').value = amount.replace('€', '').trim();
+                            
+                            // Afficher le modal de remboursement
+                            document.getElementById('refund-modal').classList.remove('hidden');
+                        });
+                        
+                        checkButton.replaceWith(refundButton);
+                        
+                        alert('Paiement marqué comme payé avec succès');
+                    }
+                });
+            });
+            
+            document.querySelectorAll('button[title="Supprimer"]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const row = this.closest('tr');
+                    const participantName = row.querySelector('.text-sm.font-medium').textContent;
+                    if (confirm(`Êtes-vous sûr de vouloir supprimer le paiement de ${participantName} ?`)) {
+                        row.remove();
+                        alert('Paiement supprimé avec succès');
+                    }
+                });
+            });
+            
+            // Gestionnaires d'événements pour la pagination
+            document.querySelector('button[title="Page précédente"]').addEventListener('click', function() {
+                alert('Page précédente - Fonctionnalité à implémenter');
+            });
+            
+            document.querySelector('button[title="Page suivante"]').addEventListener('click', function() {
+                alert('Page suivante - Fonctionnalité à implémenter');
+            });
+            
+            // Gestionnaire d'événements pour le menu mobile
+            const mobileMenuButton = document.querySelector('.mobile-menu-button');
+            const mobileMenuClose = document.querySelector('.mobile-menu-close');
+            const mobileMenu = document.querySelector('.mobile-menu');
+            
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenu.classList.remove('hidden');
+                setTimeout(() => {
+                    mobileMenu.classList.add('active');
+                }, 10);
+            });
+            
+            mobileMenuClose.addEventListener('click', function() {
+                mobileMenu.classList.remove('active');
+                setTimeout(() => {
+                    mobileMenu.classList.add('hidden');
+                }, 300);
+            });
+            
+            // Gestionnaire d'événements pour le bouton de déconnexion
+            document.querySelectorAll('.logout-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+                        window.location.href = '../index.html';
+                    }
+                });
+            });
+            
+            // Gestionnaires d'événements pour les modals
+            document.querySelectorAll('.close-modal').forEach(button => {
+                button.addEventListener('click', function() {
+                    document.getElementById('payment-details-modal').classList.add('hidden');
+                });
+            });
+            
+            document.querySelectorAll('.close-refund-modal').forEach(button => {
+                button.addEventListener('click', function() {
+                    document.getElementById('refund-modal').classList.add('hidden');
+                });
+            });
+            
+            // Gestionnaire d'événements pour le bouton de remboursement dans le modal de détails
+            document.getElementById('modal-refund-button').addEventListener('click', function() {
+                const participantName = document.getElementById('modal-participant-name').textContent;
+                const amount = document.getElementById('modal-amount').textContent;
+                
+                // Remplir les informations dans le modal de remboursement
+                document.getElementById('refund-participant-name').textContent = participantName;
+                document.getElementById('refund-amount').value = amount.replace('€', '').trim();
+                
+                // Fermer le modal de détails et ouvrir le modal de remboursement
+                document.getElementById('payment-details-modal').classList.add('hidden');
+                document.getElementById('refund-modal').classList.remove('hidden');
+            });
+            
+            // Gestionnaire d'événements pour le bouton de confirmation de remboursement
+            document.getElementById('confirm-refund-button').addEventListener('click', function() {
+                const participantName = document.getElementById('refund-participant-name').textContent;
+                const amount = document.getElementById('refund-amount').value;
+                const reason = document.getElementById('refund-reason').value;
+                
+                if (!amount || amount <= 0) {
+                    alert('Veuillez entrer un montant valide pour le remboursement.');
+                    return;
+                }
+                
+                if (!reason) {
+                    alert('Veuillez entrer une raison pour le remboursement.');
+                    return;
+                }
+                
+                // Simuler le remboursement
+                alert(`Remboursement de ${amount}€ effectué pour ${participantName}.\nRaison: ${reason}`);
+                
+                // Fermer le modal de remboursement
+                document.getElementById('refund-modal').classList.add('hidden');
+                
+                // Mettre à jour le statut du paiement dans le tableau
+                const rows = document.querySelectorAll('tbody tr');
+                rows.forEach(row => {
+                    const name = row.querySelector('.text-sm.font-medium').textContent;
+                    if (name === participantName) {
+                        const statusElement = row.querySelector('td:nth-child(5) span');
+                        statusElement.textContent = 'Remboursé';
+                        statusElement.classList.remove('bg-green-100', 'text-green-800');
+                        statusElement.classList.add('bg-gray-100', 'text-gray-800');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

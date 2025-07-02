@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes Courses - Color Run</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @media (max-width: 768px) {
+            .main-content {
+                padding-bottom: 80px; /* Espace pour la barre de navigation mobile */
+            }
+        }
+        /* Assure que le menu mobile est caché par défaut */
+        #mobile-menu {
+            display: none;
+        }
+        /* Affiche le menu mobile quand il est actif */
+        #mobile-menu.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="../index.html" class="text-2xl font-bold text-purple-600">Color Run</a>
+                </div>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="../races/courses.html" class="text-gray-700 hover:text-purple-600">
+                        Rechercher
+                    </a>
+                    <a href="my-races.html" class="text-purple-600">
+                        Mes Courses
+                    </a>
+                    <a href="../become-organizer.html" class="text-gray-700 hover:text-purple-600">
+                        Devenir Organisateur
+                    </a>
+                    <a href="profile.html" class="text-gray-700 hover:text-purple-600">
+                        Profil
+                    </a>
+                </div>
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button class="text-gray-700 hover:text-purple-600 focus:outline-none" id="mobile-menu-button" title="Menu">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile menu -->
+            <div class="md:hidden" id="mobile-menu">
+                <div class="px-2 pt-2 pb-3 space-y-1">
+                    <a href="../index.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50">Accueil</a>
+                    <a href="../races/courses.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50">Rechercher</a>
+                    <a href="my-races.html" class="block px-3 py-2 rounded-md text-base font-medium text-purple-600 hover:bg-gray-50">Mes Courses</a>
+                    <a href="../become-organizer.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50">Devenir Organisateur</a>
+                    <a href="profile.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50">Profil</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="max-w-7xl mx-auto px-4 py-8">
+            <!-- Welcome Section - Visible only on mobile -->
+            <div class="lg:hidden mb-8">
+                <div class="flex items-center space-x-4">
+                    <img src="https://via.placeholder.com/64" alt="Photo de profil" class="w-16 h-16 rounded-full">
+                    <p class="text-gray-600">Membre depuis 2024</p>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="space-y-8">
+                <!-- Upcoming Races -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-xl font-semibold mb-6">Courses à venir</h2>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-400 rounded-lg"></div>
+                                <div>
+                                    <h3 class="font-semibold">Color Run Paris</h3>
+                                    <p class="text-gray-600">15 Juin 2024 - 5km</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <span class="text-purple-600 font-semibold">25€</span>
+                                <a href="course-details.html?id=1" class="text-purple-600 hover:text-purple-700">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-16 h-16 bg-gradient-to-r from-blue-400 to-purple-400 rounded-lg"></div>
+                                <div>
+                                    <h3 class="font-semibold">Color Run Lyon</h3>
+                                    <p class="text-gray-600">22 Juillet 2024 - 3km</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <span class="text-purple-600 font-semibold">20€</span>
+                                <a href="course-details.html?id=2" class="text-purple-600 hover:text-purple-700">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Past Races -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-xl font-semibold mb-6">Courses passées</h2>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-16 h-16 bg-gradient-to-r from-green-400 to-blue-400 rounded-lg"></div>
+                                <div>
+                                    <h3 class="font-semibold">Color Run Marseille</h3>
+                                    <p class="text-gray-600">10 Mars 2024 - 4km</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <span class="text-green-600">
+                                    <i class="fas fa-check-circle"></i> Complété
+                                </span>
+                                <a href="course-details.html?id=3" class="text-purple-600 hover:text-purple-700">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-lg"></div>
+                                <div>
+                                    <h3 class="font-semibold">Color Run Nice</h3>
+                                    <p class="text-gray-600">15 Février 2024 - 3km</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <span class="text-green-600">
+                                    <i class="fas fa-check-circle"></i> Complété
+                                </span>
+                                <a href="course-details.html?id=4" class="text-purple-600 hover:text-purple-700">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-16 h-16 bg-gradient-to-r from-red-400 to-pink-400 rounded-lg"></div>
+                                <div>
+                                    <h3 class="font-semibold">Color Run Bordeaux</h3>
+                                    <p class="text-gray-600">20 Janvier 2024 - 5km</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <span class="text-green-600">
+                                    <i class="fas fa-check-circle"></i> Complété
+                                </span>
+                                <a href="course-details.html?id=5" class="text-purple-600 hover:text-purple-700">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-center space-x-6">
+                <a href="#" class="text-gray-400 hover:text-gray-300">
+                    <span class="sr-only">Facebook</span>
+                    <i class="fab fa-facebook"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-gray-300">
+                    <span class="sr-only">Instagram</span>
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-gray-300">
+                    <span class="sr-only">YouTube</span>
+                    <i class="fab fa-youtube"></i>
+                </a>
+            </div>
+            <p class="mt-8 text-center text-base text-gray-400">
+                &copy; 2025 Color Run. Tous droits réservés.
+        </p>
+    </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            // Fonction pour basculer le menu
+            function toggleMenu() {
+                mobileMenu.classList.toggle('active');
+            }
+
+            // Ajouter l'événement au bouton
+            mobileMenuButton.addEventListener('click', toggleMenu);
+
+            // Fermer le menu quand on clique en dehors
+            document.addEventListener('click', function(event) {
+                if (!mobileMenu.contains(event.target) && !mobileMenuButton.contains(event.target)) {
+                    mobileMenu.classList.remove('active');
+                }
+            });
+
+            // Fermer le menu quand on clique sur un lien
+            const mobileLinks = mobileMenu.querySelectorAll('a');
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.remove('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courses – Color Run</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body class="bg-gray-100 min-h-screen pb-20">
+
+
+<div class="max-w-7xl mx-auto px-4 mt-24">
+
+    <!-- Titre + bouton d’ajout -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
+        <h1 class="text-3xl font-bold text-gray-800">Liste des courses</h1>
+
+        <a th:href="@{/addRace}"
+           class="inline-flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-md
+              hover:bg-purple-700 transition">
+            <i class="fas fa-plus"></i> Ajouter une course
+        </a>
+    </div>
+
+    <!-- Barre de recherche -->
+    <form th:action="@{/courses}" method="get" class="mb-6 max-w-sm">
+        <label class="sr-only" for="search">Recherche</label>
+        <div class="relative">
+            <i class="fas fa-search absolute inset-y-0 left-3 flex items-center text-gray-400"></i>
+            <input id="search" name="nom" th:value="${param.nom}"
+                   placeholder="Rechercher une course…"
+                   class="pl-10 pr-3 py-2 w-full border border-gray-300 rounded-md
+                          focus:outline-none focus:ring-purple-500 focus:border-purple-500">
+        </div>
+    </form>
+
+    <!-- Tableau des courses -->
+    <div class="overflow-x-auto bg-white rounded-lg shadow">
+        <table class="min-w-full divide-y divide-gray-200 text-sm" xmlns:th="http://www.thymeleaf.org">
+            <thead class="bg-gray-50 text-left">
+            <tr>
+                <th class="px-6 py-3 font-semibold text-gray-600">ID</th>
+                <th class="px-6 py-3 font-semibold text-gray-600">Nom</th>
+                <th class="px-6 py-3 font-semibold text-gray-600">Description</th>
+                <th class="px-6 py-3 font-semibold text-gray-600">Date</th>
+                <th class="px-6 py-3 font-semibold text-gray-600">Lieu</th>
+                <th class="px-6 py-3 font-semibold text-gray-600">Max&nbsp;part.</th>
+                <th class="px-6 py-3 font-semibold text-gray-600">Prix&nbsp;€</th>
+                <th class="px-6 py-3 font-semibold text-gray-600 w-40">Actions</th>
+            </tr>
+            </thead>
+
+            <tbody class="divide-y divide-gray-100">
+            <!-- Une ligne par course -->
+            <tr th:each="c : ${courses}">
+                <td class="px-4 py-3" th:text="${c.id}"></td>
+                <td class="px-4 py-3" th:text="${c.nom}"></td>
+                <td class="px-4 py-3" th:text="${c.description}"></td>
+
+                <!-- date peut être NULL ⇒ affiche “–” -->
+                <td class="px-4 py-3"
+                    th:text="${c.date != null ? #temporals.format(c.date,'dd/MM/yyyy HH:mm') : '–'}">
+                    </td>
+
+                <td class="px-4 py-3" th:text="${c.lieu}"></td>
+                <td class="px-4 py-3" th:text="${c.nombreMaxParticipants}"></td>
+
+                <!-- Prix avec 2 décimales -->
+                <td class="px-4 py-3" th:text="${#numbers.formatDecimal(c.prix,1,'POINT',2,'POINT')}">
+                </td>
+            </tr>
+
+            <!-- Aucune course -->
+            <tr th:if="${#lists.isEmpty(courses)}">
+                <td colspan="8" class="px-4 py-6 text-center text-gray-500">
+                    Aucune course enregistrée pour l’instant.
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>

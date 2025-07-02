@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Participants - Color Run</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body class="bg-gray-100">
+    <!-- Navigation Desktop -->
+    <nav class="bg-white shadow-lg desktop-nav">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="organizer-dashboard.html" class="text-2xl font-bold text-purple-600">Color Run</a>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="organizer-dashboard.html" class="text-gray-700 hover:text-purple-600">Tableau de bord</a>
+                    <a href="organizer-races.html" class="text-gray-700 hover:text-purple-600">Mes Courses</a>
+                    <div class="flex items-center">
+                        <div class="relative group">
+                            <div class="w-8 h-8 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
+                                <img src="../../assets/images/default-avatar.png" alt="Photo de profil" class="w-full h-full object-cover">
+                            </div>
+                            <div class="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg py-2 transform opacity-0 scale-95 invisible group-hover:opacity-100 group-hover:scale-100 group-hover:visible transition-all duration-200 origin-top-right z-50">
+                                <a href="organizer-profile.html" class="flex items-center px-4 py-3 text-purple-600 bg-purple-50">
+                                    <i class="fas fa-user-circle w-5 h-5 mr-3"></i>
+                                    <span class="font-medium">Mon profil</span>
+                                </a>
+                                <div class="border-t border-gray-100 my-2"></div>
+                                <button class="w-full flex items-center px-4 py-3 text-red-600 hover:bg-red-50 transition-colors duration-200 logout-button">
+                                    <i class="fas fa-sign-out-alt w-5 h-5 mr-3"></i>
+                                    <span class="font-medium">Déconnexion</span>
+                                </button>
+                            </div>
+                        </div>
+                        <span class="font-medium user-name ml-2"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 py-8 mb-20 md:mb-8">
+        <!-- En-tête -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900 mb-2" id="race-title">Participants de la course</h1>
+                <p class="text-gray-600" id="race-info">Date: <span id="race-date"></span> | Lieu: <span id="race-location"></span></p>
+            </div>
+            <div class="flex space-x-2 mt-4 md:mt-0">
+                <a href="organizer-races.html" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition-colors duration-200">
+                    <i class="fas fa-arrow-left mr-2"></i>Retour aux courses
+                </a>
+                <button class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition-colors duration-200" id="export-btn">
+                    <i class="fas fa-file-export mr-2"></i>Exporter
+                </button>
+            </div>
+        </div>
+
+        <!-- Filtres et recherche -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <div class="flex flex-col md:flex-row gap-4">
+                <div class="flex-1">
+                    <div class="relative">
+                        <input type="text" id="search-input" placeholder="Rechercher un participant..." class="w-full pl-10 pr-4 py-2 rounded-md border-gray-300 focus:border-purple-500 focus:ring-purple-500">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button class="bg-purple-600 text-white px-4 py-2 rounded-md filter-button" data-filter="all">Tous</button>
+                    <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md filter-button" data-filter="paid">Payés</button>
+                    <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md filter-button" data-filter="pending">En attente</button>
+                    <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md filter-button" data-filter="refunded">Remboursés</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Liste des participants -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Participant</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date d'inscription</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Paiement</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+                            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200" id="participants-table-body">
+                        <!-- Les participants seront ajoutés dynamiquement -->
+                    </tbody>
+                </table>
+            </div>
+            <!-- Pagination -->
+            <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+                <div class="flex-1 flex justify-between sm:hidden">
+                    <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" id="prev-page-mobile">
+                        Précédent
+                    </button>
+                    <button class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" id="next-page-mobile">
+                        Suivant
+                    </button>
+                </div>
+                <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                    <div>
+                        <p class="text-sm text-gray-700">
+                            Affichage de <span class="font-medium" id="start-index">1</span> à <span class="font-medium" id="end-index">10</span> sur <span class="font-medium" id="total-count">0</span> résultats
+                        </p>
+                    </div>
+                    <div>
+                        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination" id="pagination">
+                            <!-- La pagination sera ajoutée dynamiquement -->
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <nav class="bg-white shadow-lg fixed bottom-0 left-0 right-0 md:hidden z-50">
+        <div class="flex justify-around items-center h-16">
+            <a href="organizer-dashboard.html" class="flex flex-col items-center text-gray-600">
+                <i class="fas fa-tachometer-alt text-xl"></i>
+                <span class="text-xs mt-1">Dashboard</span>
+            </a>
+            <a href="organizer-races.html" class="flex flex-col items-center text-gray-600">
+                <i class="fas fa-running text-xl"></i>
+                <span class="text-xs mt-1">Courses</span>
+            </a>
+            <a href="organizer-profile.html" class="flex flex-col items-center text-gray-600">
+                <i class="fas fa-user-circle text-xl"></i>
+                <span class="text-xs mt-1">Profil</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Modale de détails du participant -->
+    <div id="participant-details-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-semibold" id="participant-name">Détails du participant</h2>
+                <button class="text-gray-500 hover:text-gray-700" id="close-participant-details-btn" title="Fermer">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="participant-details-content" class="space-y-6">
+                <!-- Le contenu sera ajouté dynamiquement -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modale de remboursement -->
+    <div id="refund-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg p-8 max-w-md w-full">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-semibold">Rembourser un participant</h2>
+                <button class="text-gray-500 hover:text-gray-700" id="close-refund-btn" title="Fermer">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="refund-form" class="space-y-6">
+                <input type="hidden" id="refund-participant-id">
+                <div>
+                    <label for="refund-amount" class="block text-sm font-medium text-gray-700">Montant du remboursement (€)</label>
+                    <input type="number" id="refund-amount" name="refund-amount" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500" required>
+                </div>
+                <div>
+                    <label for="refund-reason" class="block text-sm font-medium text-gray-700">Raison du remboursement</label>
+                    <textarea id="refund-reason" name="refund-reason" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500" required></textarea>
+                </div>
+                <div class="flex justify-end space-x-4">
+                    <button type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50" id="cancel-refund-btn">
+                        Annuler
+                    </button>
+                    <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-md shadow-sm hover:bg-purple-700">
+                        Confirmer le remboursement
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Récupérer l'ID de la course depuis l'URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const raceId = urlParams.get('id');
+            
+            if (!raceId) {
+                window.location.href = 'organizer-races.html';
+                return;
+            }
+
+            // Charger les données de l'organisateur
+            const organizerData = JSON.parse(localStorage.getItem('organizerData')) || {
+                name: '',
+                email: '',
+                avatar: '../../assets/images/default-avatar.png'
+            };
+
+            // Mettre à jour l'interface utilisateur
+            document.querySelectorAll('.user-name').forEach(el => el.textContent = organizerData.name);
+            document.querySelectorAll('img[alt="Photo de profil"]').forEach(img => {
+                img.src = organizerData.avatar;
+            });
+
+            // Éléments du DOM
+            const searchInput = document.getElementById('search-input');
+            const filterButtons = document.querySelectorAll('.filter-button');
+            const participantsTableBody = document.getElementById('participants-table-body');
+            const raceTitle = document.getElementById('race-title');
+            const raceDate = document.getElementById('race-date');
+            const raceLocation = document.getElementById('race-location');
+            const exportBtn = document.getElementById('export-btn');
+            const participantDetailsModal = document.getElementById('participant-details-modal');
+            const closeParticipantDetailsBtn = document.getElementById('close-participant-details-btn');
+            const refundModal = document.getElementById('refund-modal');
+            const closeRefundBtn = document.getElementById('close-refund-btn');
+            const cancelRefundBtn = document.getElementById('cancel-refund-btn');
+            const refundForm = document.getElementById('refund-form');
+            const refundParticipantId = document.getElementById('refund-participant-id');
+
+            // Variables pour la pagination
+            let currentPage = 1;
+            let itemsPerPage = 10;
+            let totalItems = 0;
+            let filteredParticipants = [];
+
+            // Charger les données de la course
+            function loadRaceData() {
+                const races = JSON.parse(localStorage.getItem('races')) || [];
+                const race = races.find(r => r.id == raceId);
+                
+                if (race) {
+                    raceTitle.textContent = `Participants de "${race.title}"`;
+                    raceDate.textContent = new Date(race.date).toLocaleDateString();
+                    raceLocation.textContent = race.location;
+                    
+                    // Charger les participants
+                    loadParticipants('all');
+                } else {
+                    window.location.href = 'organizer-races.html';
+                }
+            }
+
+            // Charger les participants
+            function loadParticipants(filter = 'all', searchTerm = '') {
+                // Simuler des données de participants (à remplacer par des données réelles)
+                const participants = [
+                    {
+                        id: 1,
+                        name: 'Jean Dupont',
+                        email: 'jean.dupont@example.com',
+                        registrationDate: '2023-05-15T10:30:00',
+                        paymentAmount: 25,
+                        paymentDate: '2023-05-15T10:35:00',
+                        status: 'paid',
+                        raceId: raceId
+                    },
+                    {
+                        id: 2,
+                        name: 'Marie Martin',
+                        email: 'marie.martin@example.com',
+                        registrationDate: '2023-05-16T14:20:00',
+                        paymentAmount: 25,
+                        paymentDate: null,
+                        status: 'pending',
+                        raceId: raceId
+                    },
+                    {
+                        id: 3,
+                        name: 'Pierre Durand',
+                        email: 'pierre.durand@example.com',
+                        registrationDate: '2023-05-17T09:15:00',
+                        paymentAmount: 25,
+                        paymentDate: '2023-05-17T09:20:00',
+                        status: 'refunded',
+                        raceId: raceId
+                    }
+                ];
+
+                // Filtrer les participants
+                filteredParticipants = participants.filter(participant => {
+                    // Filtrer par ID de course
+                    if (participant.raceId != raceId) return false;
+                    
+                    // Filtrer par statut
+                    if (filter !== 'all' && participant.status !== filter) return false;
+                    
+                    // Filtrer par recherche
+                    if (searchTerm && !participant.name.toLowerCase().includes(searchTerm.toLowerCase()) && 
+                        !participant.email.toLowerCase().includes(searchTerm.toLowerCase())) {
+                        return false;
+                    }
+                    
+                    return true;
+                });
+
+                // Mettre à jour la pagination
+                totalItems = filteredParticipants.length;
+                updatePagination();
+                
+                // Afficher les participants de la page courante
+                displayParticipants();
+            }
+
+            // Afficher les participants de la page courante
+            function displayParticipants() {
+                participantsTableBody.innerHTML = '';
+                
+                const startIndex = (currentPage - 1) * itemsPerPage;
+                const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
+                const currentParticipants = filteredParticipants.slice(startIndex, endIndex);
+                
+                // Mettre à jour les informations de pagination
+                document.getElementById('start-index').textContent = totalItems > 0 ? startIndex + 1 : 0;
+                document.getElementById('end-index').textContent = endIndex;
+                document.getElementById('total-count').textContent = totalItems;
+                
+                currentParticipants.forEach(participant => {
+                    const row = document.createElement('tr');
+                    const status = getParticipantStatus(participant.status);
+                    const statusClass = getStatusClass(status);
+                    
+                    row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-10 w-10">
+                                    <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                                        <span class="text-gray-500 font-medium">${participant.name.charAt(0)}</span>
+                                    </div>
+                                </div>
+                                <div class="ml-4">
+                                    <div class="text-sm font-medium text-gray-900">${participant.name}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">${participant.email}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">${new Date(participant.registrationDate).toLocaleDateString()}</div>
+                            <div class="text-xs text-gray-500">${new Date(participant.registrationDate).toLocaleTimeString()}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">${participant.paymentAmount} €</div>
+                            <div class="text-xs text-gray-500">${participant.paymentDate ? new Date(participant.paymentDate).toLocaleDateString() : 'Non payé'}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
+                                ${status}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <button class="text-blue-600 hover:text-blue-900 mr-3 view-participant-btn" data-id="${participant.id}" title="Voir les détails">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            ${participant.status === 'paid' ? `
+                                <button class="text-purple-600 hover:text-purple-900 mr-3 refund-participant-btn" data-id="${participant.id}" title="Rembourser">
+                                    <i class="fas fa-undo"></i>
+                                </button>
+                            ` : ''}
+                            <button class="text-red-600 hover:text-red-900 delete-participant-btn" data-id="${participant.id}" title="Supprimer">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                    participantsTableBody.appendChild(row);
+                });
+
+                // Ajouter les gestionnaires d'événements pour les boutons
+                document.querySelectorAll('.view-participant-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const participantId = this.dataset.id;
+                        viewParticipantDetails(participantId);
+                    });
+                });
+
+                document.querySelectorAll('.refund-participant-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const participantId = this.dataset.id;
+                        openRefundModal(participantId);
+                    });
+                });
+
+                document.querySelectorAll('.delete-participant-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const participantId = this.dataset.id;
+                        deleteParticipant(participantId);
+                    });
+                });
+            }
+
+            // Mettre à jour la pagination
+            function updatePagination() {
+                const totalPages = Math.ceil(totalItems / itemsPerPage);
+                const pagination = document.getElementById('pagination');
+                pagination.innerHTML = '';
+                
+                // Bouton précédent
+                const prevButton = document.createElement('button');
+                prevButton.className = `relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium ${currentPage === 1 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-500 hover:bg-gray-50'}`;
+                prevButton.disabled = currentPage === 1;
+                prevButton.innerHTML = `
+                    <span class="sr-only">Précédent</span>
+                    <i class="fas fa-chevron-left"></i>
+                `;
+                prevButton.addEventListener('click', () => {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        displayParticipants();
+                        updatePagination();
+                    }
+                });
+                pagination.appendChild(prevButton);
+                
+                // Pages
+                for (let i = 1; i <= totalPages; i++) {
+                    const pageButton = document.createElement('button');
+                    pageButton.className = `relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium ${i === currentPage ? 'z-10 bg-purple-50 border-purple-500 text-purple-600' : 'text-gray-700 hover:bg-gray-50'}`;
+                    pageButton.textContent = i;
+                    pageButton.addEventListener('click', () => {
+                        currentPage = i;
+                        displayParticipants();
+                        updatePagination();
+                    });
+                    pagination.appendChild(pageButton);
+                }
+                
+                // Bouton suivant
+                const nextButton = document.createElement('button');
+                nextButton.className = `relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium ${currentPage === totalPages ? 'text-gray-300 cursor-not-allowed' : 'text-gray-500 hover:bg-gray-50'}`;
+                nextButton.disabled = currentPage === totalPages;
+                nextButton.innerHTML = `
+                    <span class="sr-only">Suivant</span>
+                    <i class="fas fa-chevron-right"></i>
+                `;
+                nextButton.addEventListener('click', () => {
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        displayParticipants();
+                        updatePagination();
+                    }
+                });
+                pagination.appendChild(nextButton);
+                
+                // Mettre à jour les boutons de pagination mobile
+                document.getElementById('prev-page-mobile').disabled = currentPage === 1;
+                document.getElementById('next-page-mobile').disabled = currentPage === totalPages;
+            }
+
+            // Fonction pour déterminer le statut d'un participant
+            function getParticipantStatus(status) {
+                switch (status) {
+                    case 'paid':
+                        return 'Payé';
+                    case 'pending':
+                        return 'En attente';
+                    case 'refunded':
+                        return 'Remboursé';
+                    default:
+                        return 'Inconnu';
+                }
+            }
+
+            // Fonction pour obtenir la classe CSS du statut
+            function getStatusClass(status) {
+                switch (status) {
+                    case 'Payé':
+                        return 'bg-green-100 text-green-800';
+                    case 'En attente':
+                        return 'bg-yellow-100 text-yellow-800';
+                    case 'Remboursé':
+                        return 'bg-gray-100 text-gray-800';
+                    default:
+                        return 'bg-gray-100 text-gray-800';
+                }
+            }
+
+            // Fonction pour afficher les détails d'un participant
+            function viewParticipantDetails(participantId) {
+                const participant = filteredParticipants.find(p => p.id == participantId);
+                
+                if (participant) {
+                    const detailsModal = document.getElementById('participant-details-modal');
+                    const detailsContent = document.getElementById('participant-details-content');
+                    const detailsTitle = document.getElementById('participant-name');
+                    
+                    // Mettre à jour le titre
+                    detailsTitle.textContent = participant.name;
+                    
+                    // Créer le contenu de la modale
+                    detailsContent.innerHTML = `
+                        <div class="flex flex-col md:flex-row gap-6">
+                            <div class="md:w-1/3">
+                                <div class="h-32 w-32 rounded-full bg-gray-200 flex items-center justify-center mx-auto">
+                                    <span class="text-gray-500 text-4xl font-medium">${participant.name.charAt(0)}</span>
+                                </div>
+                            </div>
+                            <div class="md:w-2/3">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <h3 class="text-sm font-medium text-gray-500">Email</h3>
+                                        <p class="mt-1 text-sm text-gray-900">${participant.email}</p>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-sm font-medium text-gray-500">Date d'inscription</h3>
+                                        <p class="mt-1 text-sm text-gray-900">${new Date(participant.registrationDate).toLocaleDateString()} à ${new Date(participant.registrationDate).toLocaleTimeString()}</p>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-sm font-medium text-gray-500">Montant</h3>
+                                        <p class="mt-1 text-sm text-gray-900">${participant.paymentAmount} €</p>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-sm font-medium text-gray-500">Date de paiement</h3>
+                                        <p class="mt-1 text-sm text-gray-900">${participant.paymentDate ? new Date(participant.paymentDate).toLocaleDateString() + ' à ' + new Date(participant.paymentDate).toLocaleTimeString() : 'Non payé'}</p>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-sm font-medium text-gray-500">Statut</h3>
+                                        <p class="mt-1">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusClass(getParticipantStatus(participant.status))}">
+                                                ${getParticipantStatus(participant.status)}
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-6 flex justify-end space-x-4">
+                            ${participant.status === 'paid' ? `
+                                <button class="px-4 py-2 text-sm font-medium text-purple-600 bg-white border border-purple-300 rounded-md shadow-sm hover:bg-purple-50 refund-from-details-btn" data-id="${participant.id}">
+                                    <i class="fas fa-undo mr-2"></i>Rembourser
+                                </button>
+                            ` : ''}
+                            <button class="px-4 py-2 text-sm font-medium text-red-600 bg-white border border-red-300 rounded-md shadow-sm hover:bg-red-50 delete-from-details-btn" data-id="${participant.id}">
+                                <i class="fas fa-trash mr-2"></i>Supprimer
+                            </button>
+                        </div>
+                    `;
+                    
+                    // Ajouter les gestionnaires d'événements pour les boutons
+                    if (participant.status === 'paid') {
+                        document.querySelector('.refund-from-details-btn').addEventListener('click', function() {
+                            const id = this.dataset.id;
+                            detailsModal.classList.add('hidden');
+                            openRefundModal(id);
+                        });
+                    }
+                    
+                    document.querySelector('.delete-from-details-btn').addEventListener('click', function() {
+                        const id = this.dataset.id;
+                        detailsModal.classList.add('hidden');
+                        deleteParticipant(id);
+                    });
+                    
+                    // Gérer la fermeture de la modale
+                    closeParticipantDetailsBtn.addEventListener('click', () => {
+                        detailsModal.classList.add('hidden');
+                    });
+                    
+                    // Afficher la modale
+                    detailsModal.classList.remove('hidden');
+                }
+            }
+
+            // Fonction pour ouvrir la modale de remboursement
+            function openRefundModal(participantId) {
+                const participant = filteredParticipants.find(p => p.id == participantId);
+                
+                if (participant) {
+                    refundParticipantId.value = participantId;
+                    document.getElementById('refund-amount').value = participant.paymentAmount;
+                    document.getElementById('refund-reason').value = '';
+                    refundModal.classList.remove('hidden');
+                }
+            }
+
+            // Fonction pour supprimer un participant
+            function deleteParticipant(participantId) {
+                if (confirm('Êtes-vous sûr de vouloir supprimer ce participant ?')) {
+                    // TODO: Implémenter la suppression réelle
+                    alert('Fonctionnalité à venir : Suppression du participant');
+                }
+            }
+
+            // Gérer les filtres
+            filterButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const filter = this.dataset.filter;
+                    filterButtons.forEach(b => {
+                        b.classList.remove('bg-purple-600', 'text-white');
+                        b.classList.add('bg-gray-200', 'text-gray-700');
+                    });
+                    this.classList.remove('bg-gray-200', 'text-gray-700');
+                    this.classList.add('bg-purple-600', 'text-white');
+                    currentPage = 1;
+                    loadParticipants(filter, searchInput.value);
+                });
+            });
+
+            // Gérer la recherche
+            searchInput.addEventListener('input', function() {
+                currentPage = 1;
+                const activeFilter = document.querySelector('.filter-button.bg-purple-600').dataset.filter;
+                loadParticipants(activeFilter, this.value);
+            });
+
+            // Gérer l'exportation
+            exportBtn.addEventListener('click', function() {
+                // TODO: Implémenter l'exportation
+                alert('Fonctionnalité à venir : Exportation des participants');
+            });
+
+            // Gérer la fermeture de la modale de remboursement
+            closeRefundBtn.addEventListener('click', () => {
+                refundModal.classList.add('hidden');
+            });
+
+            cancelRefundBtn.addEventListener('click', () => {
+                refundModal.classList.add('hidden');
+            });
+
+            // Gérer la soumission du formulaire de remboursement
+            refundForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const participantId = refundParticipantId.value;
+                const amount = document.getElementById('refund-amount').value;
+                const reason = document.getElementById('refund-reason').value;
+                
+                // TODO: Implémenter le remboursement réel
+                alert(`Fonctionnalité à venir : Remboursement de ${amount}€ pour le participant ${participantId} avec la raison : ${reason}`);
+                
+                refundModal.classList.add('hidden');
+            });
+
+            // Gérer la pagination mobile
+            document.getElementById('prev-page-mobile').addEventListener('click', function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    displayParticipants();
+                    updatePagination();
+                }
+            });
+
+            document.getElementById('next-page-mobile').addEventListener('click', function() {
+                const totalPages = Math.ceil(totalItems / itemsPerPage);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    displayParticipants();
+                    updatePagination();
+                }
+            });
+
+            // Ajouter un gestionnaire pour le bouton de déconnexion
+            document.querySelectorAll('.logout-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+                        localStorage.removeItem('organizerData');
+                        window.location.href = '../index.html';
+                    }
+                });
+            });
+
+            // Charger les données initiales
+            loadRaceData();
+        });
+    </script>
+</body>
+</html> 

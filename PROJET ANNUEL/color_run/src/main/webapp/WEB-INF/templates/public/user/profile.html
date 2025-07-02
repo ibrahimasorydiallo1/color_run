@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil - Color Run</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @media (max-width: 768px) {
+            .main-content {
+                padding-bottom: 80px; /* Espace pour la barre de navigation mobile */
+            }
+        }
+        /* Assure que le menu mobile est caché par défaut */
+        #mobile-menu {
+            display: none;
+        }
+        /* Affiche le menu mobile quand il est actif */
+        #mobile-menu.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="../index.html" class="text-2xl font-bold text-purple-600">Color Run</a>
+                </div>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="../races/courses.html" class="text-gray-700 hover:text-purple-600">
+                        Rechercher
+                    </a>
+                    <a href="my-races.html" class="text-gray-700 hover:text-purple-600">
+                        Mes Courses
+                    </a>
+                    <a href="../become-organizer.html" class="text-gray-700 hover:text-purple-600">
+                        Devenir Organisateur
+                    </a>
+                    <a href="profile.html" class="text-purple-600">
+                        Profil
+                    </a>
+                </div>
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button class="text-gray-700 hover:text-purple-600 focus:outline-none" id="mobile-menu-button" title="Menu">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div class="md:hidden" id="mobile-menu">
+                <div class="px-2 pt-2 pb-3 space-y-1">
+                    <a href="../index.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50">Accueil</a>
+                    <a href="../races/courses.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50">Rechercher</a>
+                    <a href="my-races.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50">Mes Courses</a>
+                    <a href="../become-organizer.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50">Devenir Organisateur</a>
+                    <a href="profile.html" class="block px-3 py-2 rounded-md text-base font-medium text-purple-600 hover:bg-gray-50">Profil</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="max-w-5xl mx-auto px-4 py-8">
+            <!-- Welcome Section - Visible only on mobile -->
+            <div class="lg:hidden mb-8">
+                <div class="flex items-center space-x-4">
+                    <img src="https://via.placeholder.com/64" alt="Photo de profil" class="w-16 h-16 rounded-full">
+                    <p class="text-gray-600">Membre depuis 2024</p>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="space-y-6">
+                <!-- Personal Information -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-semibold">Informations personnelles</h2>
+                        <button class="text-purple-600 hover:text-purple-700">
+                            <i class="fas fa-edit"></i> Modifier
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Prénom</label>
+                            <p class="mt-1 text-gray-900">John</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Nom</label>
+                            <p class="mt-1 text-gray-900">Doe</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Email</label>
+                            <p class="mt-1 text-gray-900">john.doe@example.com</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Téléphone</label>
+                            <p class="mt-1 text-gray-900">06 12 34 56 78</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Ville</label>
+                            <p class="mt-1 text-gray-900">Paris</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Date de naissance</label>
+                            <p class="mt-1 text-gray-900">01/01/1990</p>
+                        </div>
+                    </div>
+                    <div class="mt-6 pt-6 border-t border-gray-200">
+                        <a href="../auth/login.html" class="hidden md:inline-flex items-center px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-md">
+                            <i class="fas fa-sign-out-alt mr-2"></i>
+                            Déconnexion
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Statistics -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-white rounded-lg shadow-md p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-lg font-semibold">Courses complétées</h3>
+                            <i class="fas fa-flag-checkered text-purple-600 text-xl"></i>
+                        </div>
+                        <p class="text-3xl font-bold text-purple-600">5</p>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-md p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-lg font-semibold">Kilomètres parcourus</h3>
+                            <i class="fas fa-road text-purple-600 text-xl"></i>
+                        </div>
+                        <p class="text-3xl font-bold text-purple-600">25</p>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-md p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-lg font-semibold">Badges gagnés</h3>
+                            <i class="fas fa-medal text-purple-600 text-xl"></i>
+                        </div>
+                        <p class="text-3xl font-bold text-purple-600">3</p>
+                    </div>
+                </div>
+
+                <!-- Badges -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-xl font-semibold mb-4">Mes badges</h2>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <i class="fas fa-running text-purple-600 text-2xl"></i>
+                            </div>
+                            <h3 class="font-semibold">Premier pas</h3>
+                            <p class="text-sm text-gray-600">Première course complétée</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <i class="fas fa-fire text-purple-600 text-2xl"></i>
+                            </div>
+                            <h3 class="font-semibold">En feu</h3>
+                            <p class="text-sm text-gray-600">3 courses en 1 mois</p>
+                        </div>
+                        <div class="text-center opacity-50">
+                            <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <i class="fas fa-trophy text-gray-400 text-2xl"></i>
+                            </div>
+                            <h3 class="font-semibold">Champion</h3>
+                            <p class="text-sm text-gray-600">10 courses complétées</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Logout Button - Visible only on mobile -->
+                <div class="lg:hidden">
+                    <a href="../auth/login.html" class="inline-flex items-center justify-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow-md">
+                        <i class="fas fa-sign-out-alt mr-2"></i>
+                        Déconnexion
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            // Fonction pour basculer le menu
+            function toggleMenu() {
+                mobileMenu.classList.toggle('active');
+            }
+
+            // Ajouter l'événement au bouton
+            mobileMenuButton.addEventListener('click', toggleMenu);
+
+            // Fermer le menu quand on clique en dehors
+            document.addEventListener('click', function(event) {
+                if (!mobileMenu.contains(event.target) && !mobileMenuButton.contains(event.target)) {
+                    mobileMenu.classList.remove('active');
+                }
+            });
+
+            // Fermer le menu quand on clique sur un lien
+            const mobileLinks = mobileMenu.querySelectorAll('a');
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.remove('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

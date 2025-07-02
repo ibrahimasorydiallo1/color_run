@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Devenir Organisateur - Color Run</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Assure que le menu mobile est caché par défaut */
+        #mobile-menu {
+            display: none;
+        }
+        /* Affiche le menu mobile quand il est actif */
+        #mobile-menu.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="./index.html" class="text-2xl font-bold text-purple-600">Color Run</a>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="races/courses.html" class="text-gray-700 hover:text-purple-600">Courses</a>
+                    <a href="become-organizer.html" class="text-purple-600 font-semibold">Devenir Organisateur</a>
+                    <a href="auth/login.html" class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700">Connexion</a>
+                </div>
+                <div class="md:hidden">
+                    <button class="text-gray-700 hover:text-purple-600 focus:outline-none" id="mobile-menu-button" title="Menu">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div class="md:hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="races/courses.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50">Courses</a>
+                <a href="about.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50">À propos</a>
+                <a href="contact.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50">Contact</a>
+                <a href="become-organizer.html" class="block px-3 py-2 rounded-md text-base font-medium text-purple-600 hover:bg-gray-50">Devenir Organisateur</a>
+                <a href="auth/login.html" class="block px-3 py-2 rounded-md text-base font-medium text-white bg-purple-600 hover:bg-purple-700">Connexion</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-3xl mx-auto px-4 py-8">
+        <div class="bg-white rounded-lg shadow-md p-8">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold text-gray-900">Devenir Organisateur</h1>
+                <p class="mt-4 text-gray-600">
+                    Partagez votre passion pour les courses colorées en devenant organisateur sur Color Run.
+                    Remplissez le formulaire ci-dessous pour nous faire part de votre motivation.
+                </p>
+            </div>
+
+            <form class="space-y-6">
+                <!-- Personal Information -->
+                <div class="space-y-4">
+                    <h2 class="text-xl font-semibold text-gray-900">Informations personnelles</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="firstName" class="block text-sm font-medium text-gray-700">Prénom</label>
+                            <input type="text" id="firstName" name="firstName" required
+                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                                placeholder="">
+                        </div>
+                        <div>
+                            <label for="lastName" class="block text-sm font-medium text-gray-700">Nom</label>
+                            <input type="text" id="lastName" name="lastName" required
+                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                                placeholder="">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                        <input type="email" id="email" name="email" required
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                            placeholder="">
+                    </div>
+                    <div>
+                        <label for="phone" class="block text-sm font-medium text-gray-700">Téléphone</label>
+                        <input type="tel" id="phone" name="phone" required
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                            placeholder="">
+                    </div>
+                </div>
+
+                <!-- Experience -->
+                <div class="space-y-4">
+                    <h2 class="text-xl font-semibold text-gray-900">Expérience</h2>
+                    <div>
+                        <label for="experience" class="block text-sm font-medium text-gray-700">
+                            Expérience en organisation d'événements
+                        </label>
+                        <textarea id="experience" name="experience" rows="4" required
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                            placeholder="Décrivez votre expérience dans l'organisation d'événements sportifs ou autres..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Motivation -->
+                <div class="space-y-4">
+                    <h2 class="text-xl font-semibold text-gray-900">Motivation</h2>
+                    <div>
+                        <label for="motivation" class="block text-sm font-medium text-gray-700">
+                            Pourquoi souhaitez-vous devenir organisateur ?
+                        </label>
+                        <textarea id="motivation" name="motivation" rows="6" required
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                            placeholder="Expliquez-nous pourquoi vous souhaitez devenir organisateur et ce que vous apporteriez à la communauté Color Run..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Event Ideas -->
+                <div class="space-y-4">
+                    <h2 class="text-xl font-semibold text-gray-900">Idées d'événements</h2>
+                    <div>
+                        <label for="eventIdeas" class="block text-sm font-medium text-gray-700">
+                            Décrivez vos idées d'événements
+                        </label>
+                        <textarea id="eventIdeas" name="eventIdeas" rows="4" required
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                            placeholder="Partagez vos idées créatives pour des courses colorées..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div>
+                    <button type="submit"
+                        class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                        Envoyer ma demande
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            // Fonction pour basculer le menu
+            function toggleMenu() {
+                mobileMenu.classList.toggle('active');
+            }
+
+            // Ajouter l'événement au bouton
+            mobileMenuButton.addEventListener('click', toggleMenu);
+
+            // Fermer le menu quand on clique en dehors
+            document.addEventListener('click', function(event) {
+                if (!mobileMenu.contains(event.target) && !mobileMenuButton.contains(event.target)) {
+                    mobileMenu.classList.remove('active');
+                }
+            });
+
+            // Fermer le menu quand on clique sur un lien
+            const mobileLinks = mobileMenu.querySelectorAll('a');
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.remove('active');
+                });
+            });
+        });
+    </script>
+</body>
+<!-- Footer -->
+<footer class="bg-gray-800">
+    <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-center space-x-6">
+            <a href="#" class="text-gray-400 hover:text-gray-300">
+                <span class="sr-only">Facebook</span>
+                <i class="fab fa-facebook"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-gray-300">
+                <span class="sr-only">Instagram</span>
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-gray-300">
+                <span class="sr-only">YouTube</span>
+                <i class="fab fa-youtube"></i>
+            </a>
+        </div>
+        <p class="mt-8 text-center text-base text-gray-400">
+            &copy; 2025 Color Run. Tous droits réservés.
+    </p>
+</div>
+</footer>
+</html> 

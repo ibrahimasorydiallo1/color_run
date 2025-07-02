@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courses - Color Run</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Assure que le menu mobile est caché par défaut */
+        #mobile-menu {
+            display: none;
+        }
+        /* Affiche le menu mobile quand il est actif */
+        #mobile-menu.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="../index.html" class="text-2xl font-bold text-purple-600">Color Run</a>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="courses.html" class="text-purple-600 font-semibold">Courses</a>
+                    <a href="../become-organizer.html" class="text-gray-700 hover:text-purple-600">Devenir Organisateur</a>
+                    <a href="../auth/login.html" class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700">Connexion</a>
+                </div>
+                <div class="md:hidden">
+                    <button class="text-gray-700 hover:text-purple-600 focus:outline-none" id="mobile-menu-button" title="Menu">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div class="md:hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="courses.html" class="block px-3 py-2 rounded-md text-base font-medium text-purple-600 hover:bg-gray-50">Courses</a>
+                <a href="../about.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50">À propos</a>
+                <a href="../contact.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50">Contact</a>
+                <a href="../become-organizer.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50">Devenir Organisateur</a>
+                <a href="../auth/login.html" class="block px-3 py-2 rounded-md text-base font-medium text-white bg-purple-600 hover:bg-purple-700">Connexion</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Filters Section -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4">Filtres</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                    <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
+                    <input type="date" id="date" name="date"
+                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-purple-500 focus:border-purple-500">
+                </div>
+                <div>
+                    <label for="city" class="block text-sm font-medium text-gray-700">Ville</label>
+                    <select id="city" name="city"
+                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-purple-500 focus:border-purple-500">
+                        <option value="">Toutes les villes</option>
+                        <option value="paris">Paris</option>
+                        <option value="lyon">Lyon</option>
+                        <option value="marseille">Marseille</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="distance" class="block text-sm font-medium text-gray-700">Distance</label>
+                    <select id="distance" name="distance"
+                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-purple-500 focus:border-purple-500">
+                        <option value="">Toutes les distances</option>
+                        <option value="3">3 km</option>
+                        <option value="5">5 km</option>
+                        <option value="10">10 km</option>
+                    </select>
+                </div>
+                <div class="flex items-end">
+                    <button type="button"
+                        class="w-full bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                        Appliquer les filtres
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sort Options -->
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold text-gray-900">Courses disponibles</h1>
+            <div class="flex items-center space-x-4">
+                <label for="sort" class="text-sm font-medium text-gray-700">Trier par:</label>
+                <select id="sort" name="sort"
+                    class="border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-purple-500 focus:border-purple-500">
+                    <option value="date-asc">Date (plus proche)</option>
+                    <option value="date-desc">Date (plus lointaine)</option>
+                    <option value="price-asc">Prix (croissant)</option>
+                    <option value="price-desc">Prix (décroissant)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Courses Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Course Card 1 -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="h-48 bg-gradient-to-r from-purple-400 to-pink-400"></div>
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-semibold text-gray-900">Color Run Paris</h3>
+                        <span class="bg-purple-100 text-purple-800 text-xs font-semibold px-2.5 py-0.5 rounded">5km</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">5km de fun et de couleurs dans la capitale</p>
+                    <div class="flex items-center text-gray-500 mb-4">
+                        <i class="fas fa-calendar-alt mr-2"></i>
+                        <span>15 Juillet 2025</span>
+                    </div>
+                    <div class="flex items-center text-gray-500 mb-4">
+                        <i class="fas fa-map-marker-alt mr-2"></i>
+                        <span>Paris, France</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-purple-600 font-semibold">25€</span>
+                        <a href="course-details.html?id=1"
+                            class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700">Voir détails</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course Card 2 -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="h-48 bg-gradient-to-r from-blue-400 to-purple-400"></div>
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-semibold text-gray-900">Color Run Lyon</h3>
+                        <span class="bg-purple-100 text-purple-800 text-xs font-semibold px-2.5 py-0.5 rounded">3km</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">3km de plaisir au cœur de Lyon</p>
+                    <div class="flex items-center text-gray-500 mb-4">
+                        <i class="fas fa-calendar-alt mr-2"></i>
+                        <span>22 Juillet 2025</span>
+                    </div>
+                    <div class="flex items-center text-gray-500 mb-4">
+                        <i class="fas fa-map-marker-alt mr-2"></i>
+                        <span>Lyon, France</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-purple-600 font-semibold">20€</span>
+                        <a href="course-details.html?id=2"
+                            class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700">Voir détails</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course Card 3 -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="h-48 bg-gradient-to-r from-pink-400 to-orange-400"></div>
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-semibold text-gray-900">Color Run Marseille</h3>
+                        <span class="bg-purple-100 text-purple-800 text-xs font-semibold px-2.5 py-0.5 rounded">4km</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">4km de couleurs au bord de la mer</p>
+                    <div class="flex items-center text-gray-500 mb-4">
+                        <i class="fas fa-calendar-alt mr-2"></i>
+                        <span>29 Juillet 2025</span>
+                    </div>
+                    <div class="flex items-center text-gray-500 mb-4">
+                        <i class="fas fa-map-marker-alt mr-2"></i>
+                        <span>Marseille, France</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-purple-600 font-semibold">22€</span>
+                        <a href="course-details.html?id=3"
+                            class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700">Voir détails</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-center space-x-6">
+                <a href="#" class="text-gray-400 hover:text-gray-300">
+                    <span class="sr-only">Facebook</span>
+                    <i class="fab fa-facebook"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-gray-300">
+                    <span class="sr-only">Instagram</span>
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-gray-300">
+                    <span class="sr-only">YouTube</span>
+                    <i class="fab fa-youtube"></i>
+                </a>
+            </div>
+            <p class="mt-8 text-center text-base text-gray-400">
+                &copy; 2025 Color Run. Tous droits réservés.
+        </p>
+    </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            // Fonction pour basculer le menu
+            function toggleMenu() {
+                mobileMenu.classList.toggle('active');
+            }
+
+            // Ajouter l'événement au bouton
+            mobileMenuButton.addEventListener('click', toggleMenu);
+
+            // Fermer le menu quand on clique en dehors
+            document.addEventListener('click', function(event) {
+                if (!mobileMenu.contains(event.target) && !mobileMenuButton.contains(event.target)) {
+                    mobileMenu.classList.remove('active');
+                }
+            });
+
+            // Fermer le menu quand on clique sur un lien
+            const mobileLinks = mobileMenu.querySelectorAll('a');
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.remove('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

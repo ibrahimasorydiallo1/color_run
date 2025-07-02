@@ -1,0 +1,58 @@
+Rumton est un organisme fictif représentant votre client.
+
+inclure une page pour l'api Stripe dans mon powerpoint
+
+cacher les clés API dans un fichier texte ou json.
+pk_test_51RaCSbB0671vfetGyFxCnbmHLV8NVpVrMivQqv7AOCH9JLVW3hPGGnhASaAQg0eGu6snuBXlgF2LNjhBqvYB7TeB00DYhqwP3H
+
+sk_test_51RaCSbB0671vfetGwURJcgE6c3UbM5B2zHTvJ74j1l3HFcsgqKQXvSsdkhlQroq6qE2x4cpQq1da8HpE4Y92S6HM007yyoSh5b
+
+besoin est :
+Ajouter le paiement Stripe au moment de l’inscription à une Course
+tout en gardant ton approche servlet pur + Thymeleaf, sans framework Spring.
+
+Process Stripe:
+- Ajoute la dépendance Stripe Java dans ton pom.xml
+- Préparer la clé API Stripe
+- Ajouter un endpoint pour créer une PaymentIntent
+👉 Pourquoi ?
+Tu ne peux pas mettre le paiement directement dans le HTML : côté serveur, il faut d'abord créer une PaymentIntent pour générer un client_secret.
+
+- Adapter ton frontend pour :✔️ Quand l’utilisateur clique « Suivant » dans ton formulaire,
+👉 appeler ton servlet /create-payment-intent en fetch POST.
+
+✔️ Utiliser le client Stripe.js pour traiter la carte
+
+Pour tester stripe:
+4242 4242 4242 4242 
+CVC : 123
+
+TESTS UNITAIRES
+dans le fichier pom.xml, voici la variable qui vous donne le chemin de votre projet Java : ${project.basedir}
+
+
+Utiliser H2 est un excellent choix pour ton projet sans Spring :
+
+C’est léger
+
+C’est embarqué (pas besoin d’un serveur DB à part)
+
+Parfait pour des démos ou des tests rapides
+
+
+Explication :
+
+jdbc:h2:~/color_run_db → crée un fichier color_run_db.mv.db dans ton HOME
+
+AUTO_SERVER=TRUE → permet à plusieurs processus Java d’y accéder
+
+
+#commande pour lancer le h2
+java -jar "C:\Program Files (x86)\H2\bin\h2-2.3.232.jar"
+
+Il faut créer le dossier exception et les gérer
+
+select * from utilisateur;
+
+Je n'ai pas rajouter d'email à l'inscription pour le bien de la planète mais j'ai rajouté pour l'inscription à une course.
+

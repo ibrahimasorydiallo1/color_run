@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription – Color Run</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body class="bg-gray-100 min-h-screen py-12">
+
+<div class="max-w-2xl mx-auto px-4">
+    <div class="bg-white rounded-lg shadow-lg p-8">
+
+        <div class="text-center mb-8">
+            <a href="/" class="text-3xl font-bold text-purple-600">Color&nbsp;Run</a>
+            <h2 class="text-2xl font-semibold text-gray-800 mt-4">Créer un compte</h2>
+            <p class="text-gray-600 mt-2">Rejoignez la communauté Color&nbsp;Run</p>
+        </div>
+
+        <!-- message d’erreur -->
+        <div class="bg-red-100 text-red-800 p-3 rounded mb-6"
+             th:if="${error}" th:text="${error}"></div>
+
+        <!-- Formulaire -->
+        <form th:action="@{/register}" method="post" class="space-y-6">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Prénom -->
+                <div>
+                    <label for="prenom" class="block text-sm font-medium text-gray-700">Prénom</label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                        <i class="fas fa-user text-gray-400 absolute inset-y-0 left-0 pl-3 flex items-center"></i>
+                        <input type="text" id="prenom" name="prenom" required
+                               class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                               placeholder="Prénom"
+                               th:value="${prenom}">
+                    </div>
+                </div>
+
+                <!-- Nom -->
+                <div>
+                    <label for="nom" class="block text-sm font-medium text-gray-700">Nom</label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                        <i class="fas fa-user text-gray-400 absolute inset-y-0 left-0 pl-3 flex items-center"></i>
+                        <input type="text" id="nom" name="nom" required
+                               class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                               placeholder="Nom"
+                               th:value="${nom}">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Email -->
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                <div class="mt-1 relative rounded-md shadow-sm">
+                    <i class="fas fa-envelope text-gray-400 absolute inset-y-0 left-0 pl-3 flex items-center"></i>
+                    <input type="email" id="email" name="email" required
+                           class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                           placeholder="Email"
+                           th:value="${email}">
+                </div>
+            </div>
+
+            <!-- Mot de passe -->
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700">Mot de passe</label>
+                <div class="mt-1 relative rounded-md shadow-sm">
+                    <i class="fas fa-lock text-gray-400 absolute inset-y-0 left-0 pl-3 flex items-center"></i>
+                    <input type="password" id="password" name="password" required
+                           class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                           placeholder="••••••••">
+                </div>
+                <p class="mt-1 text-sm text-gray-500">8 caractères minimum, incluant lettres et chiffres</p>
+            </div>
+
+            <!-- Confirmation -->
+            <div>
+                <label for="confirmPassword" class="block text-sm font-medium text-gray-700">Confirmer le mot de passe</label>
+                <div class="mt-1 relative rounded-md shadow-sm">
+                    <i class="fas fa-lock text-gray-400 absolute inset-y-0 left-0 pl-3 flex items-center"></i>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required
+                           class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                           placeholder="••••••••">
+                </div>
+            </div>
+
+            <button type="submit"
+                    class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                Créer mon compte
+            </button>
+        </form>
+
+        <div class="mt-6 text-center">
+            <p class="text-sm text-gray-600">
+                Déjà un compte ?
+                <a href="/color_run_war_exploded/login" class="font-medium text-purple-600 hover:text-purple-500">
+                    Se connecter
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
