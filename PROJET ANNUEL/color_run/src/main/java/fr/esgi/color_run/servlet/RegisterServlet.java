@@ -63,7 +63,7 @@ public class RegisterServlet extends HttpServlet {
             User u = userService.inscrire(prenom, nom, email, password, "coureur");
             // Connexion automatique après inscription
             req.getSession(true).setAttribute("user", u);
-            res.sendRedirect(req.getContextPath() + "/home");
+            res.sendRedirect(req.getContextPath() + "/");
         } catch (UserDejaPresentException ex) {
             req.setAttribute("error", ex.getMessage());
             doGet(req, res);
