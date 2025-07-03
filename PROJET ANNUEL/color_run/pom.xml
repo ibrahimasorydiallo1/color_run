@@ -44,6 +44,12 @@
             <artifactId>stripe-java</artifactId>
             <version>24.4.0</version>
         </dependency>
+        <!-- pom.xml -->
+        <dependency>
+            <groupId>at.favre.lib</groupId>
+            <artifactId>bcrypt</artifactId>
+            <version>0.10.2</version>
+        </dependency>
 
         <dependency>
             <groupId>com.h2database</groupId>

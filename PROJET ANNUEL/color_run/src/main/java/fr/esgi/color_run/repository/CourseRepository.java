@@ -10,6 +10,8 @@ public interface CourseRepository {
 
     List<Course> findByNomContainingIgnoreCase(String nom) throws SQLException;
 
+    Course findById(Long id) throws SQLException;
+
     void save(Course course) throws SQLException;
 
     void update(Course course) throws SQLException;

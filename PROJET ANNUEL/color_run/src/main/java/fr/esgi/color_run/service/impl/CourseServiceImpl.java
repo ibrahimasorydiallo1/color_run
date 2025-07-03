@@ -36,6 +36,12 @@ public class CourseServiceImpl implements CourseService {
         return repo.findByNomContainingIgnoreCase(nom);
     }
 
+    @Override
+    public Course trouverParId(Long id) throws SQLException {
+        return repo.findById(id);
+    }
+
+
     /* ---------- Ajout ---------- */
 
     @Override

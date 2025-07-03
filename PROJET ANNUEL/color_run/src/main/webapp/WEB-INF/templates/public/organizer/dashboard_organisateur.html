@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard – Color Run</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/assets/css/style.css}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="bg-gray-100">
+
+<!-- ============ NAVBAR DESKTOP ============ -->
+<nav class="bg-white shadow-lg desktop-nav">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="flex justify-between items-center h-16">
+
+            <a th:href="@{/organizer/dashboard}"
+               class="text-2xl font-bold text-purple-600">Color Run</a>
+
+            <!-- Menu -->
+            <div class="hidden md:flex items-center space-x-4">
+                <a th:href="@{/organizer/dashboard}"
+                   class="text-purple-600 font-medium">Tableau de bord</a>
+                <a th:href="@{/organizer/races}"
+                   class="text-gray-700 hover:text-purple-600">Mes Courses</a>
+
+                <!-- Avatar + menu -->
+                <div class="relative group">
+                    <div class="w-8 h-8 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
+                        <img th:src="${organizer.avatar}"
+                             alt="Photo de profil"
+                             class="w-full h-full object-cover">
+                    </div>
+
+                    <div class="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg py-2
+                      invisible opacity-0 scale-95 group-hover:visible group-hover:opacity-100
+                      group-hover:scale-100 transition-all origin-top-right z-50">
+                        <a th:href="@{/organizer/profile}"
+                           class="flex items-center px-4 py-3 text-purple-600 bg-purple-50">
+                            <i class="fas fa-user-circle w-5 h-5 mr-3"></i>
+                            <span class="font-medium">Mon profil</span>
+                        </a>
+                        <div class="border-t border-gray-100 my-2"></div>
+                        <form th:action="@{/logout}" method="post">
+                            <button class="w-full flex items-center px-4 py-3 text-red-600 hover:bg-red-50">
+                                <i class="fas fa-sign-out-alt w-5 h-5 mr-3"></i>
+                                <span class="font-medium">Déconnexion</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <span class="font-medium ml-2" th:text="${organizer.nom}">Nom</span>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- ============ CONTENU PRINCIPAL ============ -->
+<div class="max-w-7xl mx-auto px-4 py-8 mb-20 md:mb-8">
+
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-900 mb-4 md:mb-0">Tableau de bord</h1>
+        <a th:href="@{/organizer/races/new}"
+           class="bg-purple-600 text-white px-6 py-2 rounded-md hover:bg-purple-700">
+            <i class="fas fa-plus mr-2"></i>Créer une course
+        </a>
+    </div>
+
+    <!-- Cartes statistiques -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+
+        <div class="stat-card">
+            <div class="stat-head"><h3>Courses actives</h3><i class="fas fa-running"></i></div>
+            <p class="stat-value" th:text="${stats.coursesActives}">3</p>
+            <p class="stat-label">Courses en cours</p>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-head"><h3>Participants</h3><i class="fas fa-users"></i></div>
+            <p class="stat-value" th:text="${stats.totalParticipants}">150</p>
+            <p class="stat-label">Total</p>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-head"><h3>Revenus</h3><i class="fas fa-euro-sign"></i></div>
+            <p class="stat-value"
+               th:text="${#numbers.formatDecimal(stats.revenus,1,'SPACE',0,'POINT')} + '€'">3750€</p>
+            <p class="stat-label">Ce mois-ci</p>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-head"><h3>Prochaine course</h3><i class="fas fa-calendar"></i></div>
+            <p class="stat-value" th:text="${stats.joursAvantProchaine}">15</p>
+            <p class="stat-label">Jours restants</p>
+        </div>
+    </div>
+
+    <!-- Graphiques -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div class="graph-card">
+            <h3 class="graph-title">Répartition des participants</h3>
+            <canvas id="registrationStatsChart" class="h-64"></canvas>
+        </div>
+
+        <div class="graph-card">
+            <h3 class="graph-title">Revenus mensuels</h3>
+            <canvas id="revenueChart" class="h-64"></canvas>
+        </div>
+    </div>
+
+    <!-- Derniers paiements -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden" th:with="paiements=${lastPayments}">
+        <div class="p-6 border-b border-gray-200 flex flex-col md:flex-row md:justify-between gap-4">
+            <h3 class="text-lg font-semibold">Derniers paiements</h3>
+            <!-- barre recherche / filtre laissées statiques -->
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                <tr>
+                    <th class="th-head">Participant</th>
+                    <th class="th-head">Course</th>
+                    <th class="th-head">Montant</th>
+                    <th class="th-head">Date</th>
+                    <th class="th-head">Statut</th>
+                    <th class="th-head">Actions</th>
+                </tr>
+                </thead>
+
+                <tbody class="bg-white divide-y divide-gray-200">
+                <tr th:each="p : ${paiements}">
+                    <td class="td-cell" th:text="${p.participant}">Jean Dupont</td>
+                    <td class="td-cell" th:text="${p.course}">Color Run Paris</td>
+                    <td class="td-cell" th:text="${p.montant + '€'}">25€</td>
+                    <td class="td-cell"
+                        th:text="${#temporals.format(p.date,'dd/MM/yyyy')}">15/03/2024</td>
+                    <td class="td-cell">
+            <span th:text="${p.statut}"
+                  th:classappend="${p.statut == 'Payé' ? 'badge-green' :
+                                   p.statut == 'En attente' ? 'badge-yellow' :
+                                   'badge-gray'}">
+              Payé
+            </span>
+                    </td>
+                    <td class="td-cell text-right">
+                        <a href="#" class="action-btn view" title="Voir">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a href="#" th:if="${p.statut == 'Payé'}"
+                           class="action-btn refund" title="Rembourser">
+                            <i class="fas fa-undo"></i>
+                        </a>
+                        <a href="#" class="action-btn delete" title="Supprimer">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(paiements)}">
+                    <td colspan="6" class="px-6 py-6 text-center text-gray-500">
+                        Aucun paiement pour l’instant.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

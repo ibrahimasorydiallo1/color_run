@@ -10,7 +10,66 @@
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
-<body class="bg-gray-100 min-h-screen pb-20">
+<body class="bg-gray-100 min-h-screen pb-20 pt-16">
+
+<!-- ===== Navigation ===== -->
+<nav class="bg-white shadow-lg fixed w-full z-50">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="flex justify-between items-center h-16">
+            <div class="flex items-center">
+                <a th:href="@{/}" class="text-2xl font-bold text-purple-600">Color run</a>
+            </div>
+
+            <!-- Menu desktop -->
+            <div class="hidden md:flex items-center space-x-4">
+                <!-- Si l'utilisateur est admin -->
+                <div th:if="${session.user != null and session.user.role == 'admin'}">
+                    <a th:href="@{/users}" class="text-gray-700 hover:text-purple-600">Utilisateurs</a>
+                    <a th:href="@{/courses}" class="text-gray-700 hover:text-purple-600">Courses</a>
+                </div>
+
+                <!-- Si l'utilisateur est connecté -->
+                <div th:if="${session.user != null}">
+                    <span class="text-purple-600 font-semibold">
+                        Bonjour, <span th:text="${session.user.prenom}">Prénom</span>
+                    </span>
+                </div>
+
+                <!-- Sinon, afficher Connexion -->
+                <div th:if="${session.user == null}">
+                    <a th:href="@{/login}" class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700">
+                        Connexion
+                    </a>
+                </div>
+            </div>
+
+            <!-- Burger menu -->
+            <div class="md:hidden">
+                <button id="mobile-menu-button"
+                        class="text-gray-700 hover:text-purple-600"
+                        title="Menu">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menu mobile -->
+    <div id="mobile-menu" class="md:hidden">
+        <div class="px-2 pt-2 pb-3 space-y-1">
+            <div th:if="${session.user != null and session.user.role == 'admin'}">
+                <a th:href="@{/users}"
+                   class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50">Utilisateurs</a>
+                <a th:href="@{/courses}"
+                   class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50">Courses</a>
+            </div>
+            <div th:if="${session.user == null}">
+                <a th:href="@{/login}"
+                   class="block px-3 py-2 rounded-md text-base font-medium text-white bg-purple-600 hover:bg-purple-700">Connexion</a>
+            </div>
+        </div>
+    </div>
+</nav>
 
 
 <div class="max-w-7xl mx-auto px-4 mt-24">
@@ -18,12 +77,13 @@
     <!-- Titre + bouton d’ajout -->
     <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
         <h1 class="text-3xl font-bold text-gray-800">Liste des courses</h1>
-
-        <a th:href="@{/addRace}"
-           class="inline-flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-md
+        <div th:if="${session.user != null and session.user.role == 'admin'}">
+            <a th:href="@{/addRace}"
+               class="inline-flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-md
               hover:bg-purple-700 transition">
-            <i class="fas fa-plus"></i> Ajouter une course
-        </a>
+                <i class="fas fa-plus"></i> Ajouter une course
+            </a>
+        </div>
     </div>
 
     <!-- Barre de recherche -->
@@ -39,52 +99,77 @@
     </form>
 
     <!-- Tableau des courses -->
-    <div class="overflow-x-auto bg-white rounded-lg shadow">
-        <table class="min-w-full divide-y divide-gray-200 text-sm" xmlns:th="http://www.thymeleaf.org">
-            <thead class="bg-gray-50 text-left">
-            <tr>
-                <th class="px-6 py-3 font-semibold text-gray-600">ID</th>
-                <th class="px-6 py-3 font-semibold text-gray-600">Nom</th>
-                <th class="px-6 py-3 font-semibold text-gray-600">Description</th>
-                <th class="px-6 py-3 font-semibold text-gray-600">Date</th>
-                <th class="px-6 py-3 font-semibold text-gray-600">Lieu</th>
-                <th class="px-6 py-3 font-semibold text-gray-600">Max&nbsp;part.</th>
-                <th class="px-6 py-3 font-semibold text-gray-600">Prix&nbsp;€</th>
-                <th class="px-6 py-3 font-semibold text-gray-600 w-40">Actions</th>
-            </tr>
-            </thead>
+    <!-- Grille responsive de cartes (1‒3 col.) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+         xmlns:th="http://www.thymeleaf.org">
 
-            <tbody class="divide-y divide-gray-100">
-            <!-- Une ligne par course -->
-            <tr th:each="c : ${courses}">
-                <td class="px-4 py-3" th:text="${c.id}"></td>
-                <td class="px-4 py-3" th:text="${c.nom}"></td>
-                <td class="px-4 py-3" th:text="${c.description}"></td>
+        <!-- --------- boucle sur les courses --------- -->
+        <div th:each="c : ${courses}"
+             class="bg-white rounded-lg shadow-md overflow-hidden">
 
-                <!-- date peut être NULL ⇒ affiche “–” -->
-                <td class="px-4 py-3"
-                    th:text="${c.date != null ? #temporals.format(c.date,'dd/MM/yyyy HH:mm') : '–'}">
-                    </td>
+            <!-- visuel d’en-tête (gradient ou future image) -->
+            <div class="h-48 bg-gradient-to-r from-purple-400 to-pink-400"></div>
 
-                <td class="px-4 py-3" th:text="${c.lieu}"></td>
-                <td class="px-4 py-3" th:text="${c.nombreMaxParticipants}"></td>
+            <div class="p-6">
+                <!-- Nom + badge distance (ici le nombre max de participants en guise d’info) -->
+                <div class="flex justify-between items-start mb-4">
+                    <h3 class="text-xl font-semibold text-gray-900"
+                        th:text="${c.nom}">Color Run</h3>
 
-                <!-- Prix avec 2 décimales -->
-                <td class="px-4 py-3" th:text="${#numbers.formatDecimal(c.prix,1,'POINT',2,'POINT')}">
-                </td>
-            </tr>
+                    <span class="bg-purple-100 text-purple-800 text-xs font-semibold px-2.5 py-0.5 rounded"
+                          th:if="${c.nombreMaxParticipants != null}"
+                          th:text="${c.nombreMaxParticipants + ' max'}">5&nbsp;km</span>
+                </div>
 
-            <!-- Aucune course -->
-            <tr th:if="${#lists.isEmpty(courses)}">
-                <td colspan="8" class="px-4 py-6 text-center text-gray-500">
-                    Aucune course enregistrée pour l’instant.
-                </td>
-            </tr>
-            </tbody>
-        </table>
+                <!-- Description -->
+                <p class="text-gray-600 mb-4" th:text="${c.description}">
+                    Course colorée de 5 km…
+                </p>
+
+                <!-- Date -->
+                <div class="flex items-center text-gray-500 mb-2">
+                    <i class="fas fa-calendar-alt mr-2"></i>
+                    <span th:text="${c.date != null ? #temporals.format(c.date,'dd MMMM yyyy') : 'Date à venir'}">
+          15 juillet 2025
+        </span>
+                </div>
+
+                <!-- Lieu -->
+                <div class="flex items-center text-gray-500 mb-4">
+                    <i class="fas fa-map-marker-alt mr-2"></i>
+                    <span th:text="${c.lieu}">Paris</span>
+                </div>
+
+                <!-- Prix + lien détails -->
+                <div class="flex justify-between items-center">
+        <span class="text-purple-600 font-semibold"
+              th:text="${#numbers.formatDecimal(c.prix,1,'POINT',2,'POINT')} + ' €'">
+          25,00&nbsp;€
+        </span>
+
+                    <a th:href="@{'/detailCourse/' + ${c.id}}"
+                       class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700">
+                        Voir détails
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- --------- message si aucune course --------- -->
+        <div th:if="${#lists.isEmpty(courses)}"
+             class="col-span-full text-center text-gray-500 py-12">
+            Aucune course enregistrée pour l’instant.
+        </div>
     </div>
 
+
 </div>
+
+<a th:href="@{/}"
+   class="inline-flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-md
+              hover:bg-purple-700 transition">
+     Retour
+</a>
 
 </body>
 </html>

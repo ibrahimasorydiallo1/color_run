@@ -56,3 +56,65 @@ select * from utilisateur;
 
 Je n'ai pas rajouter d'email à l'inscription pour le bien de la planète mais j'ai rajouté pour l'inscription à une course.
 
+
+Pourquoi BCrypt ?
+• Résistant au brute-force (coût configurable)
+• Sel inclus dans le hash (pas de colonne « salt » à gérer)
+• Implémentation mature, dispo pour Java (lib at.favre.lib:bcrypt)
+
+
+Le servlet envoie le mot de passe en clair au service, et c’est désormais UserServiceImpl qui le transforme en hash avant d’enregistrer.
+
+
+
+
+Ce qui se passe
+
+    Servlet récupère les champs, crée l’objet User (password encore en clair)
+    → aucune logique de sécurité dans la couche web.
+
+    inscrireAdmin (service) :
+
+        vérifie l’unicité de l’e-mail,
+
+        appelle PasswordUtil.hash(password) pour générer le hash BCrypt,
+
+        passe l’objet (modifié) au repository.
+
+    Repository stocke le hash dans la colonne password.
+
+
+
+Pour lancer le server tomcat
+
+Créer (ou rouvrir) la configuration Run/Debug
+
+    Run ▸ Edit Configurations…
+
+    Cliquez sur + ► Tomcat Server ► Local
+
+        Name : Color-Run (Tomcat)
+
+        Application server : choisis ton Tomcat ajouté à l’étape 1.
+
+    Onglet Deployment :
+
+        + ► Artifact ► sélectionne ton WAR exploded
+        (color_run:war exploded généré par Maven/Gradle).
+
+        Contexte : color_run_war_exploded (ou ROOT si tu le déploies à la racine).
+
+    Onglet Server (ports) : vérifie que HTTP port = 8080
+    ou celui que tu utilises.
+
+Clique Apply puis OK.
+3. Lancer le serveur
+
+    Icône verte ▶️ dans la barre d’outils – sélectionne ta config
+    Color-Run (Tomcat) :
+    IntelliJ affiche la console « Tomcat started on port(s): 8080 ».
+
+    Ouvre ton navigateur :
+
+http://localhost:8080/color_run_war_exploded
+

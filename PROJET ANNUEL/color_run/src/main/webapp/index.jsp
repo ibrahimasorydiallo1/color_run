@@ -44,18 +44,25 @@
                 <a href="<c:url value='/'/>" class="text-2xl font-bold text-purple-600">Color run</a>
             </div>
 
-            <!-- Desktop -->
             <div class="hidden md:flex items-center space-x-4">
-                <a href="<c:url value='/users'/>"
-                   class="text-gray-700 hover:text-purple-600">Utilisateurs</a>
-                <a href="<c:url value='/courses'/>"
-                   class="text-gray-700 hover:text-purple-600">Courses</a>
-                <a href="<c:url value='/become-organizer'/>"
-                   class="text-gray-700 hover:text-purple-600">Devenir organisateur</a>
-                <a href="<c:url value='/login'/>"
-                   class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700">
-                    Connexion
-                </a>
+                <c:if test="${sessionScope.user.role == 'admin'}">
+                    <a href="<c:url value='/users'/>"
+                       class="text-gray-700 hover:text-purple-600">Utilisateurs</a>
+                    <a href="<c:url value='/courses'/>"
+                       class="text-gray-700 hover:text-purple-600">Courses</a>
+                </c:if>
+
+                <c:choose>
+                    <c:when test="${not empty sessionScope.user}">
+            <span class="text-purple-600 font-semibold">
+                Bonjour, ${sessionScope.user.prenom}
+            </span>
+                    </c:when>
+                    <c:otherwise>
+                        <a href="<c:url value='/login'/>"
+                           class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700">Connexion</a>
+                    </c:otherwise>
+                </c:choose>
             </div>
 
             <!-- Burger -->
@@ -72,17 +79,17 @@
     <!-- Mobile menu -->
     <div id="mobile-menu" class="md:hidden">
         <div class="px-2 pt-2 pb-3 space-y-1">
-            <a href="<c:url value='/users'/>"
-               class="block px-3 py-2 rounded-md text-base font-medium text-gray-700
-                      hover:text-purple-600 hover:bg-gray-50">Utilisateurs</a>
-            <a href="<c:url value='/courses'/>"
-               class="block px-3 py-2 rounded-md text-base font-medium text-gray-700
-                      hover:text-purple-600 hover:bg-gray-50">Courses</a>
+            <c:if test="${sessionScope.user.role == 'admin'}">
+                <a href="<c:url value='/users'/>"
+                   class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50">Utilisateurs</a>
+                <a href="<c:url value='/courses'/>"
+                   class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50">Courses</a>
+            </c:if>
             <a href="<c:url value='/login'/>"
-               class="block px-3 py-2 rounded-md text-base font-medium text-white
-                      bg-purple-600 hover:bg-purple-700">Connexion</a>
+               class="block px-3 py-2 rounded-md text-base font-medium text-white bg-purple-600 hover:bg-purple-700">Connexion</a>
         </div>
     </div>
+
 </nav>
 
 <!-- ===== Hero ===== -->

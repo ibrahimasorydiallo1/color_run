@@ -11,6 +11,67 @@
 </head>
 
 <body class="bg-gray-100">
+
+<!-- ===== Navigation ===== -->
+<nav class="bg-white shadow-lg fixed w-full z-50">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="flex justify-between items-center h-16">
+            <div class="flex items-center">
+                <a th:href="@{/}" class="text-2xl font-bold text-purple-600">Color run</a>
+            </div>
+
+            <!-- Menu desktop -->
+            <div class="hidden md:flex items-center space-x-4">
+                <!-- Si l'utilisateur est admin -->
+                <div th:if="${session.user != null and session.user.role == 'admin'}">
+                    <a th:href="@{/users}" class="text-gray-700 hover:text-purple-600">Utilisateurs</a>
+                    <a th:href="@{/courses}" class="text-gray-700 hover:text-purple-600">Courses</a>
+                </div>
+
+                <!-- Si l'utilisateur est connecté -->
+                <div th:if="${session.user != null}">
+                    <span class="text-purple-600 font-semibold">
+                        Bonjour, <span th:text="${session.user.prenom}">Prénom</span>
+                    </span>
+                </div>
+
+                <!-- Sinon, afficher Connexion -->
+                <div th:if="${session.user == null}">
+                    <a th:href="@{/login}" class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700">
+                        Connexion
+                    </a>
+                </div>
+            </div>
+
+            <!-- Burger menu -->
+            <div class="md:hidden">
+                <button id="mobile-menu-button"
+                        class="text-gray-700 hover:text-purple-600"
+                        title="Menu">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menu mobile -->
+    <div id="mobile-menu" class="md:hidden">
+        <div class="px-2 pt-2 pb-3 space-y-1">
+            <div th:if="${session.user != null and session.user.role == 'admin'}">
+                <a th:href="@{/users}"
+                   class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50">Utilisateurs</a>
+                <a th:href="@{/courses}"
+                   class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50">Courses</a>
+            </div>
+            <div th:if="${session.user == null}">
+                <a th:href="@{/login}"
+                   class="block px-3 py-2 rounded-md text-base font-medium text-white bg-purple-600 hover:bg-purple-700">Connexion</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
 <!-- ===== Contenu principal ===== -->
 <div class="max-w-7xl mx-auto px-4 py-20">
 
@@ -51,6 +112,10 @@
 
     </div>
 </div>
-
+<a th:href="@{/}"
+   class="inline-flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-md
+              hover:bg-purple-700 transition">
+    Retour
+</a>
 </body>
 </html>

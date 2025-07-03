@@ -82,6 +82,38 @@ public class CourseRepositoryImpl implements CourseRepository {
         return list;
     }
 
+
+    @Override
+    public Course findById(Long id) throws SQLException {
+        String sql = """
+        SELECT id, nom, description, date, lieu, nombreMaxParticipants, prix
+          FROM course
+         WHERE id = ?
+        """;
+
+        try (Connection c = DatabaseManager.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+
+            ps.setLong(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Timestamp ts = rs.getTimestamp("date");
+                    return new Course(
+                            rs.getLong("id"),
+                            rs.getString("nom"),
+                            rs.getString("description"),
+                            ts != null ? ts.toLocalDateTime() : null,
+                            rs.getString("lieu"),
+                            rs.getInt("nombreMaxParticipants"),
+                            rs.getFloat("prix")
+                    );
+                }
+            }
+        }
+        return null;   // pas trouvé
+    }
+
+
     /* ╔════════════════════════════════════════════════════════════╗
        ║                           SAVE                            ║
        ╚════════════════════════════════════════════════════════════╝ */

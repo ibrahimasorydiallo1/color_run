@@ -59,7 +59,7 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("user", user);
 
             System.out.println(">>> Connexion OK pour " + user.getEmail());
-            res.sendRedirect(req.getContextPath() + "/courses");
+            res.sendRedirect(req.getContextPath() + "/");
 
         } else {                       // ---- échec ----
             req.setAttribute("email", email);

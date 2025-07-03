@@ -4,6 +4,7 @@ import fr.esgi.color_run.business.User;
 import fr.esgi.color_run.exception.UserDejaPresentException;
 import fr.esgi.color_run.repository.UserRepository;
 import fr.esgi.color_run.service.UserService;
+import fr.esgi.color_run.security.PasswordUtil;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -20,47 +21,45 @@ public class UserServiceImpl implements UserService {
         this.repo = repo;
     }
 
-    /* -------- inscription -------- */
+    /* ---------- inscription (avec hash BCrypt) ---------- */
     @Override
     public User inscrire(String prenom, String nom, String email,
                          String plainPwd, String role)
             throws UserDejaPresentException, SQLException {
 
+        // e-mail unique
         if (repo.findByEmail(email) != null) {
             throw new UserDejaPresentException("Email déjà utilisé");
         }
 
-        User nouvel = new User(null, prenom, nom, email, plainPwd, role);
+        /* Hash du mot de passe (BCrypt cost = 12) */
+        String hash = PasswordUtil.hash(plainPwd);
+
+        User nouvel = new User(null, prenom, nom, email, hash, role);
         return repo.save(nouvel);
     }
 
-
-    @Override
-    public User inscrireAdmin(User u)
-            throws UserDejaPresentException, SQLException {
-
-        if (repo.findByEmail(u.getEmail()) != null) {
-            throw new UserDejaPresentException("Email déjà utilisé");
-        }
-        // TODO: hash du mot de passe plus tard
-        return repo.save(u);
-    }
-
-
-    /* -------- login -------- */
+    /* ---------- authentification ---------- */
     @Override
     public User authentifier(String email, String plainPwd) throws SQLException {
 
         if (email == null || plainPwd == null) return null;
 
-        email = email.trim().toLowerCase();
+        User u = repo.findByEmail(email.trim().toLowerCase());
 
-        User u = repo.findByEmail(email);
-
-        // plein texte pour l’instant (hash + BCrypt plus tard)
-        return (u != null && plainPwd.equals(u.getPassword())) ? u : null;
+        /* Vérifie BCrypt */
+        return (u != null && PasswordUtil.verify(plainPwd, u.getPassword())) ? u : null;
     }
 
+    @Override
+    public User inscrireAdmin(User u) throws SQLException {
+        if (repo.findByEmail(u.getEmail()) != null) {
+            throw new UserDejaPresentException("Email déjà utilisé");
+        }
+        // hash ici :
+        u.setPassword(PasswordUtil.hash(u.getPassword()));
+        return repo.save(u);
+    }
 
 
     /* -------- liste complète -------- */

@@ -11,6 +11,8 @@ public interface CourseService {
 
     List<Course> recupererCourses(String nom) throws SQLException;
 
+    Course trouverParId(Long id) throws SQLException;
+
     void ajouterCourse(Course course) throws SQLException;
 
     void modifierCourse(Course course) throws SQLException;

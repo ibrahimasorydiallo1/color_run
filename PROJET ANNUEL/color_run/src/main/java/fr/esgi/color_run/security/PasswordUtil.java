@@ -2,33 +2,22 @@ package fr.esgi.color_run.security;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 
-/**
- * Utilitaires pour hachage / vérification de mots de passe.
- *
- * Dépendance Maven :
- * <dependency>
- *   <groupId>at.favre.lib</groupId>
- *   <artifactId>bcrypt</artifactId>
- *   <version>0.10.2</version>
- * </dependency>
- */
 public final class PasswordUtil {
 
-    // coût (work factor) : 12 = bon compromis temps / sécurité en 2025
-    private static final int COST = 12;
+    private static final int COST = 12;     // 10-12 = bon compromis 2025
 
-    private PasswordUtil() { /* utilitaire */ }
+    private PasswordUtil() {}
 
-    /** Renvoie un hash BCrypt (format $2a$COST$SALT+HASH). */
-    public static String hashPassword(String plainPassword) {
+    /** Hash BCrypt ($2a$…) */
+    public static String hash(String plain) {
         return BCrypt.withDefaults()
-                .hashToString(COST, plainPassword.toCharArray());
+                .hashToString(COST, plain.toCharArray());
     }
 
-    /** Vérifie qu’un mot de passe correspond au hash stocké. */
-    public static boolean verifyPassword(String plainPassword, String storedHash) {
+    /** Vérifie plain versus hash stocké */
+    public static boolean verify(String plain, String hash) {
         return BCrypt.verifyer()
-                .verify(plainPassword.toCharArray(), storedHash)
+                .verify(plain.toCharArray(), hash)
                 .verified;
     }
 }
