@@ -1,170 +1,683 @@
 <!DOCTYPE html>
-<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="'Color Run – ' + ${course.nom}">Détail course</title>
-
+    <title>Color Run Paris - Détails</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Ajout de Stripe -->
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        const stripe = Stripe('pk_test_51RaCSbB0671vfetGyFxCnbmHLV8NVpVrMivQqv7AOCH9JLVW3hPGGnhASaAQg0eGu6snuBXlgF2LNjhBqvYB7TeB00DYhqwP3H');
+
+        document.getElementById('nextButton').addEventListener('click', async () => {
+            // 1️⃣ Récupérer les infos du formulaire
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const tShirtSize = document.getElementById('tShirtSize').value;
+
+            // 2️⃣ Appeler ton backend pour créer une session Checkout
+            const response = await fetch('/create-checkout-session', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    firstName, lastName, email, phone, tShirtSize
+                })
+            });
+
+            const session = await response.json();
+
+            // 3️⃣ Rediriger vers Stripe Checkout
+            const result = await stripe.redirectToCheckout({
+                sessionId: session.id
+            });
+
+            if (result.error) {
+                alert(result.error.message);
+            }
+        });
+    </script>
+    <style>
+        /* Assure que le menu mobile est caché par défaut */
+        #mobile-menu {
+            display: none;
+        }
+        /* Affiche le menu mobile quand il est actif */
+        #mobile-menu.active {
+            display: block;
+        }
+    </style>
 </head>
-
 <body class="bg-gray-100">
+<!-- Navigation -->
+<nav class="bg-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="flex justify-between items-center h-16">
+            <div class="flex items-center">
+                <a href="../index.html" class="text-2xl font-bold text-purple-600">Color Run</a>
+            </div>
+            <div class="hidden md:flex items-center space-x-4">
+                <a href="courses.html" class="text-purple-600 font-semibold">Courses</a>
+                <a href="../contact.html" class="text-gray-700 hover:text-purple-600">Contact</a>
+                <a href="../become-organizer.html" class="text-gray-700 hover:text-purple-600">Devenir Organisateur</a>
+                <a href="../auth/login.html" class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700">Connexion</a>
+            </div>
+            <div class="md:hidden">
+                <button class="text-gray-700 hover:text-purple-600 focus:outline-none" id="mobile-menu-button" title="Menu">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- Mobile Menu -->
+    <div class="md:hidden" id="mobile-menu">
+        <div class="px-2 pt-2 pb-3 space-y-1">
+            <a href="courses.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50">Courses</a>
+            <a href="../contact.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50">Contact</a>
+            <a href="../become-organizer.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50">Devenir Organisateur</a>
+            <a href="../auth/login.html" class="block px-3 py-2 rounded-md text-base font-medium text-white bg-purple-600 hover:bg-purple-700">Connexion</a>
+        </div>
+    </div>
+</nav>
 
+<!-- Main Content -->
 <div class="max-w-7xl mx-auto px-4 py-8">
-
-    <!-- ===== en-tête image ===== -->
+    <!-- Course Header -->
     <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
         <div class="h-96 bg-gradient-to-r from-purple-400 to-pink-400 relative">
-            <div class="absolute bottom-0 left-0 right-0 p-8
-                  bg-gradient-to-t from-black/80 to-transparent">
-                <h1 class="text-4xl font-bold text-white mb-2"
-                    th:text="${course.nom}">Color Run</h1>
-
-                <div class="flex flex-wrap items-center text-white space-x-6">
-          <span class="flex items-center">
-            <i class="fas fa-calendar-alt mr-2"></i>
-            <span th:text="${#temporals.format(course.date,'dd MMMM yyyy', 'fr')}">
-              15 juin 2025
-            </span>
-          </span>
-                    <span class="flex items-center">
-            <i class="fas fa-map-marker-alt mr-2"></i>
-            <span th:text="${course.lieu}">Paris</span>
-          </span>
-                    <span class="flex items-center" th:if="${course.distance != null}">
-            <i class="fas fa-running mr-2"></i>
-            <span th:text="${course.distance + ' km'}">5&nbsp;km</span>
-          </span>
+            <div class="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black to-transparent">
+                <h1 class="text-4xl font-bold text-white mb-2">Color Run Paris</h1>
+                <div class="flex items-center text-white space-x-4">
+                        <span class="flex items-center" data-date>
+                            <i class="fas fa-calendar-alt mr-2"></i>
+                            15 Juin 2024
+                        </span>
+                    <span class="flex items-center" data-location>
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            Paris, France
+                        </span>
+                    <span class="flex items-center" data-distance>
+                            <i class="fas fa-running mr-2"></i>
+                            5km
+                        </span>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-        <!-- ===== COLONNE PRINCIPALE (2/3) ===== -->
+        <!-- Main Content -->
         <div class="lg:col-span-2 space-y-8">
-
             <!-- Description -->
-            <section class="bg-white rounded-lg shadow-md p-6">
+            <div class="bg-white rounded-lg shadow-md p-6">
                 <h2 class="text-2xl font-semibold mb-4">À propos de la course</h2>
-                <p class="text-gray-600 mb-4"
-                   th:text="${course.description}">
-                    Rejoignez-nous pour…
+                <p class="text-gray-600 mb-4">
+                    Rejoignez-nous pour une expérience colorée inoubliable au cœur de Paris ! La Color Run Paris
+                    vous propose un parcours de 5km à travers les plus beaux quartiers de la capitale, ponctué
+                    de zones de poudre colorée et d'animations festives.
                 </p>
-
-                <div class="grid grid-cols-2 gap-4 mt-6 text-gray-600">
-                    <div class="flex items-center" th:if="${course.nombreMaxParticipants != null}">
+                <div class="grid grid-cols-2 gap-4 mt-6">
+                    <div class="flex items-center">
                         <i class="fas fa-users text-purple-600 mr-2"></i>
-                        <span th:text="'Max participants : ' + ${course.nombreMaxParticipants}">
-              Max participants : 1000
-            </span>
+                        <span data-participants>Max participants: 1000</span>
                     </div>
                     <div class="flex items-center">
                         <i class="fas fa-euro-sign text-purple-600 mr-2"></i>
-                        <span th:text="'Prix : ' +
-                           ${#numbers.formatDecimal(course.prix,1,'POINT',2,'POINT')} + ' €'">
-              Prix : 25 €
-            </span>
+                        <span data-price>Prix: 25€</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-flag text-purple-600 mr-2"></i>
+                        <span data-obstacles>Obstacles: Oui</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-heart text-purple-600 mr-2"></i>
+                        <span data-cause>Cause: Association XYZ</span>
                     </div>
                 </div>
-            </section>
+            </div>
 
-            <!-- Carte / Itinéraire -->
-            <section class="bg-white rounded-lg shadow-md p-6">
+            <!-- Map -->
+            <div class="bg-white rounded-lg shadow-md p-6">
                 <h2 class="text-2xl font-semibold mb-4">Itinéraire</h2>
-                <div id="map" class="h-96 rounded-lg">
-                    <!-- Map JS ou iframe -->
-                </div>
-            </section>
+                <div id="map" class="h-96 rounded-lg"></div>
+            </div>
 
             <!-- FAQ -->
-            <section class="bg-white rounded-lg shadow-md p-6"
-                     th:if="${faqBlocks != null}">
-                <h2 class="text-2xl font-semibold mb-6">FAQ – Course</h2>
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-semibold mb-6">FAQ - Déroulement des courses</h2>
                 <div class="space-y-6">
-                    <div th:each="f : ${faqBlocks}">
-                        <h3 class="text-lg font-medium text-purple-600 mb-2"
-                            th:text="${f.question}">Question ?</h3>
-                        <p class="text-gray-600" th:text="${f.reponse}">Réponse…</p>
+                    <div>
+                        <h3 class="text-lg font-medium text-purple-600 mb-2">Comment se déroule une course ?</h3>
+                        <p class="text-gray-600">
+                            La course se déroule en plusieurs étapes :
+                            1. Retrait des dossards 2h avant le départ
+                            2. Échauffement collectif en musique
+                            3. Départs par vagues de 100 personnes
+                            4. Passage par 5 zones de couleur tous les kilomètres
+                            5. Festival de couleurs à l'arrivée avec DJ et animations
+                        </p>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-medium text-purple-600 mb-2">Quelles sont les zones de couleur ?</h3>
+                        <p class="text-gray-600">
+                            Chaque kilomètre comporte une zone de couleur différente : jaune, rose, orange, bleu et violet. Dans chaque zone, nos bénévoles vous aspergent de poudre colorée pendant que vous courez. Ces zones sont aussi animées avec de la musique !
+                        </p>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-medium text-purple-600 mb-2">Quel est le timing type d'une course ?</h3>
+                        <p class="text-gray-600">
+                            8h00 : Ouverture du village et retrait des dossards
+                            9h30 : Échauffement collectif
+                            10h00 : Départ de la première vague
+                            11h30 : Début du festival de couleurs
+                            13h00 : Fin de l'événement
+                        </p>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-medium text-purple-600 mb-2">Y a-t-il des ravitaillements ?</h3>
+                        <p class="text-gray-600">
+                            Oui, deux points de ravitaillement sont prévus sur le parcours (au 2,5km et à l'arrivée) avec de l'eau et des fruits. Des toilettes sont également disponibles au village de départ/arrivée et à mi-parcours.
+                        </p>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-medium text-purple-600 mb-2">Comment se passe l'arrivée ?</h3>
+                        <p class="text-gray-600">
+                            À l'arrivée, vous recevez votre médaille finisher et un sachet de poudre colorée pour participer au festival de couleurs. Un DJ anime la zone d'arrivée et toutes les 30 minutes, un lancer collectif de poudre est organisé pour créer un magnifique nuage multicolore !
+                        </p>
                     </div>
                 </div>
-            </section>
+            </div>
         </div>
 
-        <!-- ===== SIDEBAR (1/3) ===== -->
-        <aside class="space-y-8">
-
-            <!-- Encadré inscription -->
-            <section class="bg-white rounded-lg shadow-md p-6">
+        <!-- Sidebar -->
+        <div class="space-y-8">
+            <!-- Registration Card -->
+            <div class="bg-white rounded-lg shadow-md p-6">
                 <h2 class="text-2xl font-semibold mb-4">Inscription</h2>
-
-                <div class="space-y-4 text-gray-700">
-                    <div class="flex justify-between">
-                        <span>Prix d'inscription</span>
-                        <span class="text-2xl font-bold text-purple-600"
-                              th:text="${#numbers.formatDecimal(course.prix,1,'POINT',2,'POINT')} + ' €'">
-              25 €
-            </span>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Prix d'inscription</span>
+                        <span class="text-2xl font-bold text-purple-600">25€</span>
                     </div>
-                    <div class="flex justify-between" th:if="${placesDispo != null}">
-                        <span>Places disponibles</span>
-                        <span th:text="${placesDispo}">850</span>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Places disponibles</span>
+                        <span class="text-gray-900" data-available>850</span>
+                    </div>
+                    <button id="registerButton" class="w-full bg-purple-600 text-white px-4 py-3 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                        S'inscrire maintenant
+                    </button>
+
+                    <!-- Formulaire d'inscription (caché) -->
+                    <div id="registrationForm" class="hidden mt-4 space-y-4">
+                        <h3 class="text-lg font-semibold text-purple-600">Informations personnelles</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="firstName" class="block text-sm font-medium text-gray-700">Prénom</label>
+                                <input type="text" id="firstName" name="firstName" required
+                                       class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-purple-500 focus:border-purple-500">
+                            </div>
+                            <div>
+                                <label for="lastName" class="block text-sm font-medium text-gray-700">Nom</label>
+                                <input type="text" id="lastName" name="lastName" required
+                                       class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-purple-500 focus:border-purple-500">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                                <input type="email" id="email" name="email" required
+                                       class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-purple-500 focus:border-purple-500">
+                            </div>
+                            <div>
+                                <label for="phone" class="block text-sm font-medium text-gray-700">Téléphone</label>
+                                <input type="tel" id="phone" name="phone" required
+                                       class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-purple-500 focus:border-purple-500">
+                            </div>
+                            <div>
+                                <label for="tShirtSize" class="block text-sm font-medium text-gray-700">Taille du t-shirt</label>
+                                <select id="tShirtSize" name="tShirtSize" required
+                                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-purple-500 focus:border-purple-500">
+                                    <option value="">Sélectionnez votre taille</option>
+                                    <option value="XS">XS</option>
+                                    <option value="S">S</option>
+                                    <option value="M">M</option>
+                                    <option value="L">L</option>
+                                    <option value="XL">XL</option>
+                                    <option value="XXL">XXL</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Formulaire de paiement (Hidden by default) -->
+                        <div id="paymentForm" class="hidden mt-6">
+                            <h3 class="text-lg font-semibold text-purple-600 mb-4">Paiement</h3>
+                            <div class="space-y-4">
+                                <div id="card-element" class="border border-gray-300 rounded-md p-3">
+                                    <!-- Stripe Card Element sera injecté ici -->
+                                </div>
+                                <div id="card-errors" class="text-red-500 text-sm"></div>
+                                <div class="text-sm text-gray-500">
+                                    <i class="fas fa-lock mr-2"></i>
+                                    Paiement sécurisé par Stripe
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Boutons de navigation -->
+                        <div class="flex justify-between mt-6">
+                            <button type="button" id="backButton" class="hidden bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700">
+                                Retour
+                            </button>
+                            <button type="button" id="nextButton" class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700">
+                                Suivant
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Dossard Section (Hidden by default) -->
+                    <div id="bibSection" class="hidden mt-4 p-4 border-2 border-purple-200 rounded-lg">
+                        <h3 class="text-lg font-semibold text-purple-600 mb-2">Votre dossard</h3>
+                        <div class="text-center space-y-3">
+                            <div class="bg-white p-4 rounded-lg border border-gray-200">
+                                <div class="text-4xl font-bold text-purple-600" id="bibNumber">N° <span>1234</span></div>
+                                <div class="text-sm text-gray-600 mt-2" id="participantName">John Doe</div>
+                                <div class="text-sm text-gray-600" id="raceName">Color Run Paris</div>
+                                <div class="mt-3">
+                                    <img id="qrCode" src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=CR1234" alt="QR Code" class="mx-auto">
+                                </div>
+                            </div>
+                            <div class="flex space-x-2 justify-center">
+                                <button class="flex items-center px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700" onclick="downloadBib()">
+                                    <i class="fas fa-download mr-2"></i>
+                                    Télécharger PDF
+                                </button>
+                                <button class="flex items-center px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700" onclick="sendBibByEmail()">
+                                    <i class="fas fa-envelope mr-2"></i>
+                                    Recevoir par email
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Bouton pour afficher le formulaire -->
-                <button id="registerButton"
-                        class="w-full mt-6 bg-purple-600 text-white px-4 py-3 rounded-md
-                       hover:bg-purple-700 focus:outline-none"
-                        type="button">
-                    S'inscrire maintenant
-                </button>
-
-                <!-- Formulaire d’inscription caché -->
-                <form id="registrationForm" th:action="@{'/courses/' + ${course.id} + '/register'}"
-                      method="post" class="hidden mt-6 space-y-4"
-                      th:object="${participantForm}">
-
-                    <!-- Exemple de champs -->
-                    <input type="text" th:field="*{prenom}"  placeholder="Prénom"  class="input"/>
-                    <input type="text" th:field="*{nom}"     placeholder="Nom"     class="input"/>
-                    <input type="email" th:field="*{email}"  placeholder="Email"   class="input"/>
-                    <input type="tel"   th:field="*{phone}"  placeholder="Téléphone" class="input"/>
-
-                    <!-- Paiement via Stripe plus tard -->
-
-                    <button type="submit"
-                            class="w-full bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700">
-                        Valider l'inscription
-                    </button>
-                </form>
-            </section>
-
-            <!-- Section Chat ou autres widgets -->
-            <section class="bg-white rounded-lg shadow-md p-6">
-                <!-- … chat … -->
-            </section>
-        </aside>
+            <!-- Chat Section -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-semibold mb-4">Discussion</h2>
+                <div class="h-96 flex flex-col">
+                    <div class="flex-1 overflow-y-auto mb-4 space-y-4">
+                        <div class="flex items-start space-x-3">
+                            <div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="font-medium">Ibrahima</span>
+                                    <span class="text-xs text-gray-500">14:30</span>
+                                </div>
+                                <p class="text-gray-600">Qui sera là ce weekend ? 😊</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="font-medium">Moussa</span>
+                                    <span class="text-xs text-gray-500">14:35</span>
+                                </div>
+                                <p class="text-gray-600">Moi ! C'est ma première Color Run, j'ai hâte ! 🎨</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <input type="text" placeholder="Votre message..."
+                               class="flex-1 border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                        <button class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700" title="Envoyer le message">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
+<!-- Footer -->
+<footer class="bg-gray-800">
+    <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-center space-x-6">
+            <a href="#" class="text-gray-400 hover:text-gray-300">
+                <span class="sr-only">Facebook</span>
+                <i class="fab fa-facebook"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-gray-300">
+                <span class="sr-only">Instagram</span>
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-gray-300">
+                <span class="sr-only">YouTube</span>
+                <i class="fab fa-youtube"></i>
+            </a>
+        </div>
+        <p class="mt-8 text-center text-base text-gray-400">
+            &copy; 2025 Color Run. Tous droits réservés.
+        </p>
+    </div>
+</footer>
+
 <script>
-    /* Exemple rapide pour afficher/masquer le formulaire inscription */
-    document.addEventListener('DOMContentLoaded', () => {
-        const btn  = document.getElementById('registerButton');
-        const form = document.getElementById('registrationForm');
-        if (btn && form) {
-            btn.addEventListener('click', () => form.classList.toggle('hidden'));
+    document.addEventListener('DOMContentLoaded', function() {
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        // Fonction pour basculer le menu
+        function toggleMenu() {
+            mobileMenu.classList.toggle('active');
+        }
+
+        // Ajouter l'événement au bouton
+        mobileMenuButton.addEventListener('click', toggleMenu);
+
+        // Fermer le menu quand on clique en dehors
+        document.addEventListener('click', function(event) {
+            if (!mobileMenu.contains(event.target) && !mobileMenuButton.contains(event.target)) {
+                mobileMenu.classList.remove('active');
+            }
+        });
+
+        // Fermer le menu quand on clique sur un lien
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+            });
+        });
+
+        // Get course ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const courseId = urlParams.get('id');
+
+        // Course data (this would normally come from a database)
+        const courses = {
+            '1': {
+                title: 'Color Run Paris',
+                date: '15 Juin 2024',
+                location: 'Paris, France',
+                distance: '5km',
+                description: 'Rejoignez-nous pour une expérience colorée inoubliable au cœur de Paris ! La Color Run Paris vous propose un parcours de 5km à travers les plus beaux quartiers de la capitale, ponctué de zones de poudre colorée et d\'animations festives.',
+                maxParticipants: 1000,
+                price: '25€',
+                obstacles: 'Oui',
+                cause: 'Association XYZ',
+                availableSpots: 850
+            },
+            '2': {
+                title: 'Color Run Lyon',
+                date: '22 Juin 2024',
+                location: 'Lyon, France',
+                distance: '3km',
+                description: 'Une course colorée unique au cœur de Lyon ! Parcourez 3km dans les plus beaux quartiers de la ville, avec des zones de poudre colorée et des animations festives.',
+                maxParticipants: 800,
+                price: '20€',
+                obstacles: 'Non',
+                cause: 'Association ABC',
+                availableSpots: 650
+            },
+            '3': {
+                title: 'Color Run Marseille',
+                date: '29 Juin 2024',
+                location: 'Marseille, France',
+                distance: '4km',
+                description: 'Une expérience colorée inoubliable à Marseille ! 4km de course le long de la mer, avec des zones de poudre colorée et des animations festives.',
+                maxParticipants: 900,
+                price: '22€',
+                obstacles: 'Oui',
+                cause: 'Association DEF',
+                availableSpots: 750
+            }
+        };
+
+        // Update page content based on course ID
+        if (courseId && courses[courseId]) {
+            const course = courses[courseId];
+
+            // Update header
+            document.querySelector('h1').textContent = course.title;
+            document.querySelector('.bg-gradient-to-r').classList.add(`from-${courseId === '1' ? 'purple' : courseId === '2' ? 'blue' : 'pink'}-400`, `to-${courseId === '1' ? 'pink' : courseId === '2' ? 'purple' : 'orange'}-400`);
+
+            // Update course info
+            document.querySelector('[data-date]').textContent = course.date;
+            document.querySelector('[data-location]').textContent = course.location;
+            document.querySelector('[data-distance]').textContent = course.distance;
+
+            // Update description
+            document.querySelector('.text-gray-600').textContent = course.description;
+
+            // Update details
+            document.querySelector('[data-participants]').textContent = course.maxParticipants;
+            document.querySelector('[data-price]').textContent = course.price;
+            document.querySelector('[data-obstacles]').textContent = course.obstacles;
+            document.querySelector('[data-cause]').textContent = course.cause;
+            document.querySelector('[data-available]').textContent = course.availableSpots;
+        }
+
+        // Initialize Map
+        function initMap() {
+            // Coordinates and routes for different cities
+            const cityData = {
+                '1': { // Paris
+                    center: { lat: 48.8566, lng: 2.3522 },
+                    route: [
+                        [48.8584, 2.2945],  // Pont de l'Alma (départ)
+                        [48.8589, 2.2960],  // Avenue Montaigne
+                        [48.8670, 2.3150],  // Champs-Élysées
+                        [48.8625, 2.3310],  // Place de la Concorde
+                        [48.8606, 2.3376],  // Louvre (via Rue de Rivoli)
+                        [48.8580, 2.3430],  // Pont du Carrousel
+                        [48.8534, 2.3488],  // Notre-Dame (via quais)
+                        [48.8566, 2.3522],  // Tour Eiffel (via pont de la Concorde)
+                        [48.8584, 2.2945]   // Retour au Pont de l'Alma
+                    ]
+                },
+                '2': { // Lyon
+                    center: { lat: 45.7640, lng: 4.8357 },
+                    route: [
+                        [45.7640, 4.8357],  // Place Bellecour (départ)
+                        [45.7678, 4.8323],  // Opéra
+                        [45.7602, 4.8403],  // Vieux Lyon
+                        [45.7640, 4.8357]   // Retour à Place Bellecour
+                    ]
+                },
+                '3': { // Marseille
+                    center: { lat: 43.2965, lng: 5.3698 },
+                    route: [
+                        [43.2965, 5.3698],  // Vieux Port (départ)
+                        [43.2902, 5.3724],  // MuCEM
+                        [43.2937, 5.3720],  // Fort Saint-Jean
+                        [43.2965, 5.3698]   // Retour au Vieux Port
+                    ]
+                }
+            };
+
+            // Get data based on course ID or default to Paris
+            const data = cityData[courseId] || cityData['1'];
+
+            // Initialize map
+            const map = L.map('map').setView([data.center.lat, data.center.lng], 14);
+
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            // Add start/finish marker
+            L.marker([data.route[0][0], data.route[0][1]]).addTo(map)
+                .bindPopup('Départ/Arrivée')
+                .openPopup();
+
+            // Add the route line with a more visible style
+            L.polyline(data.route, {
+                color: '#9333ea', // Purple color
+                weight: 6,
+                opacity: 0.8,
+                dashArray: '10, 10', // Dashed line
+                lineCap: 'round',
+                lineJoin: 'round'
+            }).addTo(map);
+
+            // Add distance markers along the route
+            data.route.forEach((point, index) => {
+                if (index > 0) {
+                    L.marker([point[0], point[1]]).addTo(map)
+                        .bindPopup(`Point ${index}km`);
+                }
+            });
+        }
+        initMap();
+
+        // Ajout du code JavaScript pour la gestion du formulaire d'inscription et du paiement
+        const registerButton = document.getElementById('registerButton');
+        const registrationForm = document.getElementById('registrationForm');
+        const paymentForm = document.getElementById('paymentForm');
+        const backButton = document.getElementById('backButton');
+        const nextButton = document.getElementById('nextButton');
+        const bibSection = document.getElementById('bibSection');
+
+        // Gestion du bouton d'inscription
+        registerButton.addEventListener('click', () => {
+            registerButton.classList.add('hidden');
+            registrationForm.classList.remove('hidden');
+        });
+
+        // Initialisation de Stripe avec votre clé publique
+        const stripe = Stripe('pk_test_51RBu9hPFas46R6rn8uVYrMMlRkEobijGNeGniKLLn58pR0oa8D2WjOCvfZcUsYbYLefiLwuFtebM1NsZPzSjAP5B00o9CoGDdQ');
+        const elements = stripe.elements();
+        const card = elements.create('card', {
+            style: {
+                base: {
+                    color: '#32325d',
+                    fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                    fontSmoothing: 'antialiased',
+                    fontSize: '16px',
+                    '::placeholder': {
+                        color: '#aab7c4'
+                    }
+                },
+                invalid: {
+                    color: '#fa755a',
+                    iconColor: '#fa755a'
+                }
+            }
+        });
+
+        // Montage de l'élément de carte
+        card.mount('#card-element');
+
+        // Gestion des erreurs de carte
+        card.addEventListener('change', function(event) {
+            const displayError = document.getElementById('card-errors');
+            if (event.error) {
+                displayError.textContent = event.error.message;
+            } else {
+                displayError.textContent = '';
+            }
+        });
+
+        // Gestion du bouton suivant
+        nextButton.addEventListener('click', async () => {
+            if (paymentForm.classList.contains('hidden')) {
+                // Vérification du formulaire d'inscription
+                const inputs = registrationForm.querySelectorAll('input[required], select[required]');
+                let isValid = true;
+
+                inputs.forEach(input => {
+                    if (!input.value) {
+                        isValid = false;
+                        input.classList.add('border-red-500');
+                    } else {
+                        input.classList.remove('border-red-500');
+                    }
+                });
+
+                if (isValid) {
+                    // Afficher le formulaire de paiement
+                    paymentForm.classList.remove('hidden');
+                    backButton.classList.remove('hidden');
+                    nextButton.textContent = 'Payer et finaliser l\'inscription';
+
+                    // Mettre à jour le nom sur le dossard
+                    const firstName = document.getElementById('firstName').value;
+                    const lastName = document.getElementById('lastName').value;
+                    document.getElementById('participantName').textContent = `${firstName} ${lastName}`;
+                }
+            } else {
+                // Désactiver le bouton pendant le traitement
+                nextButton.disabled = true;
+                nextButton.textContent = 'Traitement en cours...';
+
+                try {
+                    // Créer un token de paiement
+                    const {token, error} = await stripe.createToken(card);
+
+                    if (error) {
+                        const errorElement = document.getElementById('card-errors');
+                        errorElement.textContent = error.message;
+                        nextButton.disabled = false;
+                        nextButton.textContent = 'Payer et finaliser l\'inscription';
+                    } else {
+                        // Envoyer le token au serveur
+                        const response = await fetch('/process-payment', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                token: token.id,
+                                amount: 2500, // 25€ en centimes
+                                description: 'Inscription Color Run Paris'
+                            })
+                        });
+
+                        const result = await response.json();
+
+                        if (result.success) {
+                            // Afficher le dossard
+                            registrationForm.classList.add('hidden');
+                            paymentForm.classList.add('hidden');
+                            bibSection.classList.remove('hidden');
+
+                            // Mettre à jour les places disponibles
+                            const availableSpots = document.querySelector('[data-available]');
+                            availableSpots.textContent = parseInt(availableSpots.textContent) - 1;
+                        } else {
+                            throw new Error(result.error);
+                        }
+                    }
+                } catch (error) {
+                    const errorElement = document.getElementById('card-errors');
+                    errorElement.textContent = 'Une erreur est survenue lors du paiement. Veuillez réessayer.';
+                    nextButton.disabled = false;
+                    nextButton.textContent = 'Payer et finaliser l\'inscription';
+                }
+            }
+        });
+
+        // Gestion du bouton retour
+        backButton.addEventListener('click', () => {
+            paymentForm.classList.add('hidden');
+            registrationForm.classList.remove('hidden');
+            nextButton.textContent = 'Suivant';
+            backButton.classList.add('hidden');
+        });
+
+        // Fonctions pour le dossard
+        function downloadBib() {
+            alert('Le téléchargement de votre dossard va commencer...');
+        }
+
+        function sendBibByEmail() {
+            alert('Votre dossard a été envoyé à votre adresse email.');
         }
     });
 </script>
-<a th:href="@{/}"
-   class="inline-flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-md
-              hover:bg-purple-700 transition">
-    Retour
-</a>
 </body>
 </html>
