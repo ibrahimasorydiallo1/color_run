@@ -92,22 +92,32 @@
 
 </nav>
 
-<!-- ===== Hero ===== -->
-<div class="hero-image min-h-screen flex items-center justify-center text-white pt-16">
-    <div class="text-center px-4">
-        <h1 class="text-4xl md:text-6xl font-bold mb-6">
-            Découvrez la Magie des Courses Colorées
-        </h1>
-        <p class="text-xl md:text-2xl mb-8">
-            Rejoignez la plus grande communauté de courses colorées en France
-        </p>
-        <a href="<c:url value='/courses'/>"
-           class="bg-purple-600 text-white px-8 py-3 rounded-md text-lg font-semibold
-                  hover:bg-purple-700 transition duration-300">
-            Trouver une course
-        </a>
+<!-- ===== Contenu avec vidéo de fond ===== -->
+<div class="relative min-h-screen overflow-hidden">
+    <!-- Vidéo de fond -->
+    <video autoplay muted loop playsinline class="absolute top-0 left-0 w-full h-full object-cover z-0">
+        <source src="<c:url value='./video_accueil.mp4'/>" type="video/mp4">
+        Votre navigateur ne prend pas en charge les vidéos HTML5.
+    </video>
+
+    <!-- Contenu texte centré -->
+    <div class="relative z-10 flex items-center justify-center min-h-screen text-white pt-16 bg-black/50">
+        <div class="text-center px-4">
+            <h1 class="text-4xl md:text-6xl font-bold mb-6">
+                Découvrez la Magie des Courses Colorées
+            </h1>
+            <p class="text-xl md:text-2xl mb-8">
+                Rejoignez la plus grande communauté de courses colorées en France
+            </p>
+            <a href="<c:url value='/courses'/>"
+               class="bg-purple-600 text-white px-8 py-3 rounded-md text-lg font-semibold
+                      hover:bg-purple-700 transition duration-300">
+                Trouver une course
+            </a>
+        </div>
     </div>
 </div>
+
 
 <!-- ===== Stats ===== -->
 <section class="bg-white py-16">

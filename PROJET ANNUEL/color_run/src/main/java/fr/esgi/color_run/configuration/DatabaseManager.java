@@ -9,10 +9,22 @@ public final class DatabaseManager {
     private static final String USER = "sa";
     private static final String PASS = "";
 
-    static { try { Class.forName("org.h2.Driver"); } catch (ClassNotFoundException e) { throw new RuntimeException(e); } }
+    static {
+        try {
+            Class.forName("org.h2.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("Driver H2 introuvable", e);
+        }
+    }
 
     private DatabaseManager() {}
+
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASS);
+        try {
+            return DriverManager.getConnection(URL, USER, PASS);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new SQLException("Impossible d'accéder à la base. Veuillez relancer la base de données svp.", e);
+        }
     }
 }
