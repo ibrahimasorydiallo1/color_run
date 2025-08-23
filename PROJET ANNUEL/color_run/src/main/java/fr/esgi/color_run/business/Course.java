@@ -20,3 +20,4 @@ public class Course {
     private int nombreMaxParticipants;
     private float prix;
 }
+
