@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Course {
-    private static int compteur = 0; // Sert à générer des IDs uniques
+    private static int compteur = 0; // générer des IDs uniques
 
     private Long id;
     private String nom;
@@ -20,4 +20,3 @@ public class Course {
     private int nombreMaxParticipants;
     private float prix;
 }
-
