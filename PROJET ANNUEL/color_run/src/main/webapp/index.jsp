@@ -54,15 +54,21 @@
 
                 <c:choose>
                     <c:when test="${not empty sessionScope.user}">
-            <span class="text-purple-600 font-semibold">
-                Bonjour, ${sessionScope.user.prenom}
-            </span>
+                        <span class="text-purple-600 font-semibold">
+                            Bonjour, ${sessionScope.user.prenom}
+                        </span>
                     </c:when>
                     <c:otherwise>
                         <a href="<c:url value='/login'/>"
                            class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700">Connexion</a>
                     </c:otherwise>
                 </c:choose>
+
+                <a href="<c:url value='/logout'/>"
+                   class="text-red-600 hover:text-red-800 font-semibold">
+                    Déconnexion
+                </a>
+
             </div>
 
             <!-- Burger -->

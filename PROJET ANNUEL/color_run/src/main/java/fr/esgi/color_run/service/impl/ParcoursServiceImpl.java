@@ -1,33 +1,30 @@
 package fr.esgi.color_run.service.impl;
 
 import fr.esgi.color_run.business.Parcours;
+import fr.esgi.color_run.repository.ParcoursRepository;
 import fr.esgi.color_run.service.ParcoursService;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-// Implémentation du service
 public class ParcoursServiceImpl implements ParcoursService {
-    private final List<Parcours> parcoursList = new ArrayList<>();
+    private final ParcoursRepository repo;
 
-    @Override
-    public void ajouterParcours(Parcours parcours) {
-        parcoursList.add(parcours);
+    public ParcoursServiceImpl(ParcoursRepository repo) {
+        this.repo = repo;
     }
 
     @Override
-    public Optional<Parcours> obtenirParcoursParId(Long id) {
-        return parcoursList.stream().filter(p -> p.getId().equals(id)).findFirst();
-    }
+    public void ajouterParcours(Parcours parcours) { repo.save(parcours); }
 
     @Override
-    public List<Parcours> obtenirTousLesParcours() {
-        return new ArrayList<>(parcoursList);
-    }
+    public Optional<Parcours> obtenirParcoursParId(Long id) { return repo.findById(id); }
 
     @Override
-    public void supprimerParcours(Long id) {
-        parcoursList.removeIf(p -> p.getId().equals(id));
-    }
+    public List<Parcours> obtenirTousLesParcours() { return repo.findAll(); }
+
+    @Override
+    public void supprimerParcours(Long id) { repo.deleteById(id); }
 }
+
