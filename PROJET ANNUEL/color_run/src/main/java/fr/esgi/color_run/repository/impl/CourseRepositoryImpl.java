@@ -1,12 +1,10 @@
 package fr.esgi.color_run.repository.impl;
 
 import fr.esgi.color_run.business.Course;
-import fr.esgi.color_run.business.User;
 import fr.esgi.color_run.configuration.DatabaseManager;
 import fr.esgi.color_run.repository.CourseRepository;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,11 +39,11 @@ public class CourseRepositoryImpl implements CourseRepository {
     public List<Course> findAll() throws SQLException {
         List<Course> list = new ArrayList<>();
         String sql = """
-        SELECT ID, NOM, description, date, lieu,
-               NOMBREMAXPARTICIPANTS, prix
-        FROM course
-        ORDER BY id
-        """;
+            SELECT id, nom, description, date, lieu,
+                   nombreMaxParticipants, prix, organisateur
+            FROM course
+            ORDER BY id
+            """;
 
         try (Connection c = DatabaseManager.getConnection();
              PreparedStatement ps = c.prepareStatement(sql);
@@ -59,7 +57,12 @@ public class CourseRepositoryImpl implements CourseRepository {
     @Override
     public List<Course> findByNomContainingIgnoreCase(String nom) throws SQLException {
         List<Course> list = new ArrayList<>();
-        String sql = "SELECT * FROM course WHERE LOWER(nom) LIKE ?";
+        String sql = """
+            SELECT id, nom, description, date, lieu,
+                   nombreMaxParticipants, prix, organisateur
+            FROM course
+            WHERE LOWER(nom) LIKE ?
+            """;
 
         try (Connection c = DatabaseManager.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
@@ -68,9 +71,6 @@ public class CourseRepositoryImpl implements CourseRepository {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) list.add(map(rs));
             }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
         return list;
     }
@@ -79,10 +79,11 @@ public class CourseRepositoryImpl implements CourseRepository {
     @Override
     public Course findById(Long id) throws SQLException {
         String sql = """
-        SELECT id, nom, description, date, lieu, nombreMaxParticipants, prix
-          FROM course
-         WHERE id = ?
-        """;
+            SELECT id, nom, description, date, lieu,
+                   nombreMaxParticipants, prix, organisateur
+            FROM course
+            WHERE id = ?
+            """;
 
         try (Connection c = DatabaseManager.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
@@ -90,17 +91,7 @@ public class CourseRepositoryImpl implements CourseRepository {
             ps.setLong(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    Timestamp ts = rs.getTimestamp("date");
-                    return new Course(
-                            rs.getLong("id"),
-                            rs.getString("nom"),
-                            rs.getString("description"),
-                            ts != null ? ts.toLocalDateTime() : null,
-                            rs.getString("lieu"),
-                            rs.getInt("nombreMaxParticipants"),
-                            rs.getFloat("prix"),
-                            rs.getString("organisateur")
-                    );
+                    return map(rs);
                 }
             }
         }
@@ -109,16 +100,15 @@ public class CourseRepositoryImpl implements CourseRepository {
 
     @Override
     public void save(Course c) throws SQLException {
-
         String sql = """
-                INSERT INTO course (nom, description, date, lieu, nombreMaxParticipants, prix, organisateur)
-                VALUES (?,?,?,?,?,?,?)
+            INSERT INTO course (nom, description, date, lieu, nombreMaxParticipants, prix, organisateur)
+            VALUES (?,?,?,?,?,?,?)
             """;
 
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            bindCourse(ps, c);
+            bindCourseFields(ps, c);           // 1..7
             ps.executeUpdate();
 
             try (ResultSet keys = ps.getGeneratedKeys()) {
@@ -136,43 +126,34 @@ public class CourseRepositoryImpl implements CourseRepository {
         String sql = """
             UPDATE course
             SET nom = ?, description = ?, date = ?, lieu = ?,
-                nombreMaxParticipants = ?, prix = ?
+                nombreMaxParticipants = ?, prix = ?, organisateur = ?
             WHERE id = ?
             """;
 
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            bindCourse(ps, c);
-            ps.setLong(7, c.getId());
+            bindCourseFields(ps, c);          // 1..7
+            ps.setLong(8, c.getId());         // id en dernier
             ps.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
-    /** Remplit les 6 paramètres INSERT/UPDATE dans le bon ordre. */
-    private void bindCourse(PreparedStatement ps, Course c) throws SQLException {
-
+    /** Renseigne les colonnes communes 1..7 (sans l'id). */
+    private void bindCourseFields(PreparedStatement ps, Course c) throws SQLException {
         ps.setString(1, c.getNom());
-
         ps.setString(2, c.getDescription());
 
-        // 3) DATE
         if (c.getDate() != null) {
             ps.setTimestamp(3, Timestamp.valueOf(c.getDate()));
         } else {
-            ps.setTimestamp(3, null);          // acceptera NULL
+            ps.setTimestamp(3, null);
         }
 
         ps.setString(4, c.getLieu());
-
-        ps.setInt   (5, c.getNombreMaxParticipants());
-
-        ps.setFloat (6, c.getPrix());
+        ps.setInt(5, c.getNombreMaxParticipants());
+        ps.setFloat(6, c.getPrix());
         ps.setString(7, c.getOrganisateur());
-        ps.setLong(8, c.getId());
     }
 
     private Course map(ResultSet rs) throws SQLException {

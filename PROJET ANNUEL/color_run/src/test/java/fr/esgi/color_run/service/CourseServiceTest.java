@@ -4,29 +4,24 @@ import fr.esgi.color_run.business.Course;
 import fr.esgi.color_run.repository.CourseRepository;
 import fr.esgi.color_run.service.impl.CourseServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-/**
- * Tests unitaires de CourseServiceImpl en mockant CourseRepository.
- */
 @ExtendWith(MockitoExtension.class)
 class CourseServiceTest {
 
@@ -41,16 +36,25 @@ class CourseServiceTest {
 
     @BeforeEach
     void setUp() {
-        // Si tu n'utilises pas @ExtendWith, dé-commente la ligne suivante :
-        // MockitoAnnotations.openMocks(this);
-
         c1 = new Course(
-                1L, "Color Run Paris", "Fun", LocalDateTime.of(2025, 7, 5, 10, 0),
-                "Paris", 2500, 25.0f
+                1L,
+                "Color Run Paris",
+                "Fun",
+                LocalDateTime.of(2025, 7, 5, 10, 0),
+                "Paris",
+                2500,
+                25.0f,
+                "Comité Paris" // <-- nouveau champ organisateur
         );
         c2 = new Course(
-                2L, "Color Run Lyon", "Encore plus fun", LocalDateTime.of(2025, 8, 2, 10, 0),
-                "Lyon", 2000, 20.0f
+                2L,
+                "Color Run Lyon",
+                "Encore plus fun",
+                LocalDateTime.of(2025, 8, 2, 10, 0),
+                "Lyon",
+                2000,
+                20.0f,
+                "Comité Lyon" // <-- nouveau champ organisateur
         );
     }
 
@@ -95,7 +99,7 @@ class CourseServiceTest {
     @Test
     @DisplayName("trouverParId(id) retourne la course si trouvée")
     void trouverParId_found() throws Exception {
-        when(repo.findById(1L)).thenReturn(c1); // plus de Optional
+        when(repo.findById(1L)).thenReturn(c1); // repo renvoie directement la Course
 
         var found = service.trouverParId(1L);
 
@@ -107,7 +111,7 @@ class CourseServiceTest {
     @Test
     @DisplayName("trouverParId(id) retourne null si absente")
     void trouverParId_notFound() throws Exception {
-        when(repo.findById(99L)).thenReturn(null); // repo renvoie null
+        when(repo.findById(99L)).thenReturn(null);
 
         var found = service.trouverParId(99L);
 

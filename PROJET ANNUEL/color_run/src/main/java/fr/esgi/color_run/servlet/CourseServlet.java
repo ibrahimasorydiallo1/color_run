@@ -83,11 +83,14 @@ public class CourseServlet extends HttpServlet {
 
                 /* ------------- AJOUT ------------- */
                 case "ajouter" -> {
-                    String nom = req.getParameter("nom");          // ← minuscules
+                    String nom = req.getParameter("nom");
+                    String organisateur = req.getParameter("organisateur"); // <-- nouveau champ
+
                     if (nom == null || nom.isBlank()) {
                         throw new IllegalArgumentException("Nom manquant");
                     }
-                    Course nouvelle = new Course(null, nom, null, null, null, 0, 0f, null);
+
+                    Course nouvelle = new Course(null, nom, null, null, null, 0, 0f, organisateur);
                     courseService.ajouterCourse(nouvelle);
                 }
 
