@@ -41,15 +41,29 @@
                 </div>
             </div>
 
+            <!-- Organisateur -->
+            <div>
+                <label for="organisateur" class="block text-sm font-medium text-gray-700">Organisateur de la course</label>
+                <div class="mt-1">
+                    <input id="organisateur" name="organisateur" type="text" required
+                           class="block w-full px-3 py-2 border border-gray-300 rounded-md
+                        focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                           placeholder="Color Run Paris"
+                           th:value="${organisateur}">
+                </div>
+            </div>
+
             <!-- Description -->
             <div>
                 <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
                 <div class="mt-1">
-          <textarea id="description" name="description" rows="3" required
-                    class="block w-full px-3 py-2 border border-gray-300 rounded-md
-                           focus:outline-none focus:ring-purple-500 focus:border-purple-500"
-                    placeholder="Course colorée de 5 km dans le parc..."
-                    th:text="${description}"></textarea>
+                    <textarea id="description" name="description" rows="3" required
+                        class="block w-full px-3 py-2 border border-gray-300 rounded-md
+                               focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                        placeholder="Course colorée de 5 km dans le parc..."
+                        th:text="${description}">
+
+                    </textarea>
                 </div>
             </div>
 

@@ -87,7 +87,7 @@ public class CourseServlet extends HttpServlet {
                     if (nom == null || nom.isBlank()) {
                         throw new IllegalArgumentException("Nom manquant");
                     }
-                    Course nouvelle = new Course(null, nom, null, null, null, 0, 0f);
+                    Course nouvelle = new Course(null, nom, null, null, null, 0, 0f, null);
                     courseService.ajouterCourse(nouvelle);
                 }
 
@@ -98,8 +98,8 @@ public class CourseServlet extends HttpServlet {
                     if (idStr == null || nom == null || nom.isBlank()) {
                         throw new IllegalArgumentException("Paramètres id/nom manquants");
                     }
-                    Long id = Long.parseLong(idStr);               // bonne conversion
-                    Course modif = new Course(id, nom, null, null, null, 0, 0f);
+                    Long id = Long.parseLong(idStr);
+                    Course modif = new Course(id, nom, null, null, null, 0, 0f, null);
                     courseService.modifierCourse(modif);
                 }
 

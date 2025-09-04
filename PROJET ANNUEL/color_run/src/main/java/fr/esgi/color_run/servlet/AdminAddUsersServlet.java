@@ -44,13 +44,31 @@ public class AdminAddUsersServlet extends HttpServlet {
         String password = req.getParameter("password");
         String role     = req.getParameter("role");      //  admin / organisateur / coureur
 
+        // Pré-remplissage si erreur
+        req.setAttribute("prenom", prenom);
+        req.setAttribute("nom", nom);
+        req.setAttribute("email", email);
+        req.setAttribute("role", role);
+
+        // Validations simples
+        if (prenom == null || prenom.isBlank()
+                || nom == null || nom.isBlank()
+                || email == null || email.isBlank()
+                || password == null || password.isBlank()) {
+            req.setAttribute("error", "Tous les champs sont requis.");
+            doGet(req, res);
+            return;
+        }
+
+        // Rôle par défaut si rien choisi
+        if (role == null || role.isBlank()) role = "coureur";
+
         try {
             /* 2) créer l’objet et enregistrer */
-            User nouvel = new User(null, prenom, nom, email, password, role);
-            userService.inscrireAdmin(nouvel);           // méthode du service réservée à l’admin
+            userService.inscrire(prenom, nom, email, password, role);
 
             /* 3) PRG : redirection vers la liste */
-            res.sendRedirect(req.getContextPath() + "/admin/adminUsers");
+            res.sendRedirect(req.getContextPath() + "/users");
 
         } catch (Exception e) {
             req.setAttribute("error", e.getMessage());

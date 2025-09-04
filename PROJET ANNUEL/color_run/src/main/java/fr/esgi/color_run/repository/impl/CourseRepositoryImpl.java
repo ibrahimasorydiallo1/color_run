@@ -15,9 +15,6 @@ import java.util.List;
  */
 public class CourseRepositoryImpl implements CourseRepository {
 
-    /* ╔════════════════════════════════════════════════════════════╗
-       ║           Création automatique de la table « course »      ║
-       ╚════════════════════════════════════════════════════════════╝ */
     public CourseRepositoryImpl() {
         String sql = """
             CREATE TABLE IF NOT EXISTS course (
@@ -27,7 +24,8 @@ public class CourseRepositoryImpl implements CourseRepository {
                 date TIMESTAMP,
                 lieu VARCHAR(255),
                 nombreMaxParticipants INT,
-                prix FLOAT
+                prix FLOAT,
+                organisateur VARCHAR(255)
             )
             """;
         try (Connection conn = DatabaseManager.getConnection();
@@ -58,11 +56,6 @@ public class CourseRepositoryImpl implements CourseRepository {
         return list;
     }
 
-
-
-    /* ╔════════════════════════════════════════════════════════════╗
-       ║             FIND BY NOM (insensible à la casse)            ║
-       ╚════════════════════════════════════════════════════════════╝ */
     @Override
     public List<Course> findByNomContainingIgnoreCase(String nom) throws SQLException {
         List<Course> list = new ArrayList<>();
@@ -105,7 +98,8 @@ public class CourseRepositoryImpl implements CourseRepository {
                             ts != null ? ts.toLocalDateTime() : null,
                             rs.getString("lieu"),
                             rs.getInt("nombreMaxParticipants"),
-                            rs.getFloat("prix")
+                            rs.getFloat("prix"),
+                            rs.getString("organisateur")
                     );
                 }
             }
@@ -113,18 +107,13 @@ public class CourseRepositoryImpl implements CourseRepository {
         return null;   // pas trouvé
     }
 
-
-    /* ╔════════════════════════════════════════════════════════════╗
-       ║                           SAVE                            ║
-       ╚════════════════════════════════════════════════════════════╝ */
     @Override
     public void save(Course c) throws SQLException {
 
         String sql = """
-        INSERT INTO course
-        (nom, description, date, lieu, nombreMaxParticipants, prix)
-        VALUES (?,?,?,?,?,?)
-        """;
+                INSERT INTO course (nom, description, date, lieu, nombreMaxParticipants, prix, organisateur)
+                VALUES (?,?,?,?,?,?,?)
+            """;
 
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -138,10 +127,6 @@ public class CourseRepositoryImpl implements CourseRepository {
         }
     }
 
-
-    /* ╔════════════════════════════════════════════════════════════╗
-       ║                          UPDATE                           ║
-       ╚════════════════════════════════════════════════════════════╝ */
     @Override
     public void update(Course c) throws SQLException {
         if (c.getId() == null) {
@@ -167,9 +152,6 @@ public class CourseRepositoryImpl implements CourseRepository {
         }
     }
 
-    /* ╔════════════════════════════════════════════════════════════╗
-       ║            Méthode de binding commune (INSERT / UPDATE)    ║
-       ╚════════════════════════════════════════════════════════════╝ */
     /** Remplit les 6 paramètres INSERT/UPDATE dans le bon ordre. */
     private void bindCourse(PreparedStatement ps, Course c) throws SQLException {
 
@@ -188,26 +170,22 @@ public class CourseRepositoryImpl implements CourseRepository {
 
         ps.setInt   (5, c.getNombreMaxParticipants());
 
-        ps.setFloat (6, c.getPrix());          // attention : 6ᵉ paramètre
+        ps.setFloat (6, c.getPrix());
+        ps.setString(7, c.getOrganisateur());
+        ps.setLong(8, c.getId());
     }
 
-
-    /* ╔════════════════════════════════════════════════════════════╗
-       ║             Mapping ResultSet  →  Entité Course            ║
-       ╚════════════════════════════════════════════════════════════╝ */
     private Course map(ResultSet rs) throws SQLException {
-        LocalDateTime date = null;
         Timestamp ts = rs.getTimestamp("date");
-        if (ts != null) date = ts.toLocalDateTime();
-
         return new Course(
                 rs.getLong("id"),
                 rs.getString("nom"),
                 rs.getString("description"),
-                date,
+                ts != null ? ts.toLocalDateTime() : null,
                 rs.getString("lieu"),
                 rs.getInt("nombreMaxParticipants"),
-                rs.getFloat("prix")
+                rs.getFloat("prix"),
+                rs.getString("organisateur")
         );
     }
 }

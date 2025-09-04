@@ -19,4 +19,6 @@ public class Course {
     private String lieu;
     private int nombreMaxParticipants;
     private float prix;
+
+    private String organisateur;
 }

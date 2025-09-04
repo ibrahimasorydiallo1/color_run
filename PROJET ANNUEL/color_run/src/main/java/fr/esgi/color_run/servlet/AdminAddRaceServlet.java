@@ -46,6 +46,7 @@ public class AdminAddRaceServlet extends HttpServlet {
         String desc     = req.getParameter("description");
         String dateStr  = req.getParameter("date");           // format ISO 2025-07-05T10:00
         String lieu     = req.getParameter("lieu");
+        String orga      = req.getParameter("organisateur");
         int maxPart     = Integer.parseInt(req.getParameter("nombreMaxParticipants"));
         String prixStr  = req.getParameter("prix");   // "20" ou "20.00"
         float prix      = Float.parseFloat(prixStr);
@@ -54,7 +55,7 @@ public class AdminAddRaceServlet extends HttpServlet {
         LocalDateTime date    = LocalDateTime.parse(req.getParameter("date"), fmt);
 
 
-        Course c = new Course(null, nom, desc, date, lieu, maxPart, prix);
+        Course c = new Course(null, nom, desc, date, lieu, maxPart, prix, orga);
         try {
             courseService.ajouterCourse(c);
 
